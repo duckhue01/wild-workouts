@@ -14,19 +14,7 @@ servers:
 security:
   - bearerAuth: []
 paths:
-
   /users/current:
-    get:
-      operationId: getCurrentUser
-      responses:
-        '200':
-          description: todo
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-
-  /users/future:
     get:
       operationId: getCurrentUser
       responses:
