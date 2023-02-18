@@ -4,13 +4,14 @@ id = d580ec95-2247-4edd-b765-e6ab3049d815
 [relations]
 
 [relations.collections]
-rootDirectory = postman/collections
+rootDirectory = api/collections
 files[] = {"id":"12348544-fc08992d-f661-4709-a78a-3f02e28e7c85","path":"Wild Workouts users.json","metaData":{}}
 
 [relations.collections.metaData]
 
 [relations.apiDefinition]
 rootDirectory = api/openapi/users
+files[] = {"path":"users Copy Copy.yml","metaData":{}}
 files[] = {"path":"users Copy.yml","metaData":{}}
 files[] = {"path":"users.yml","metaData":{}}
 
