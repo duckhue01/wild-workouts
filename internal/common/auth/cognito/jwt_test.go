@@ -1,27 +1,24 @@
 package cognito
 
 import (
-	"os"
 	"testing"
 )
 
-func TestMain(m *testing.M) {
-
-}
+const (
+	AWS_COGNITO_REGION       = "ap-southeast-1"
+	AWS_COGNITO_USER_POOL_ID = "ap-southeast-1_Sly3MWVC8"
+)
 
 func Test_getJWT(t *testing.T) {
-	if !(os.Getenv("AWS_COGNITO_USER_POOL_ID") != "" && os.Getenv("AWS_COGNITO_REGION") != "") {
-		t.Skip("requires AWS Cognito environment variables")
-	}
 
-	auth := New(os.Getenv("AWS_COGNITO_REGION"), os.Getenv("AWS_COGNITO_USER_POOL_ID"))
+	auth := New(AWS_COGNITO_REGION, AWS_COGNITO_USER_POOL_ID)
 
 	err := auth.getJWK()
 	if err != nil {
 		t.Error(err)
 	}
 
-	jwt := "eyJraWQiOiJlS3lvdytnb1wvXC9yWmtkbGFhRFNOM25jTTREd0xTdFhibks4TTB5b211aE09IiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiJjMTcxOGY3OC00ODY5LTRmMmEtYTk2ZS1lYmEwYmJkY2RkMjEiLCJldmVudF9pZCI6IjZmYWMyZGNjLTJlMzUtMTFlOS05NDZjLTZiZDI0YmRlZjFiNiIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE1NDk5MTQyNjUsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy13ZXN0LTIuYW1hem9uYXdzLmNvbVwvdXMtd2VzdC0yX0wwVldGSEVueSIsImV4cCI6MTU0OTkxNzg2NSwiaWF0IjoxNTQ5OTE0MjY1LCJqdGkiOiIzMTg0MDdkMC0zZDNhLTQ0NDItOTMyYy1lY2I0MjQ2MzRiYjIiLCJjbGllbnRfaWQiOiI2ZjFzcGI2MzZwdG4wNzRvbjBwZGpnbms4bCIsInVzZXJuYW1lIjoiYzE3MThmNzgtNDg2OS00ZjJhLWE5NmUtZWJhMGJiZGNkZDIxIn0.rJl9mdCrw_lertWhC5RiJcfhRP-xwTYkPLPXmi_NQEO-LtIJ-kwVEvUaZsPnBXku3bWBM3V35jdJloiXclbffl4SDLVkkvU9vzXDETAMaZEzOY1gDVcg4YzNNR4H5kHnl-G-XiN5MajgaWbjohDHTvbPnqgW7e_4qNVXueZv2qfQ8hZ_VcyniNxMGaui-C0_YuR6jdH-T14Wl59Cyf-UFEyli1NZFlmpUQ8QODGMUI12PVFOZiHJIOZ3CQM_Xs-TlRy53RlKGFzf6RQfRm57rJw_zLyJHHnB8DZgbdCRfhNsqZka7ZZUUAlS9aMzdmSc3pPFSJ-hH3p8eFAgB4E71g"
+	jwt := "eyJraWQiOiJVOEdYNk82Y21ZcEV1Q2FCRGdJM3VISlFUS1wvY2VVZzJGQ2hFQjlXRDRNZz0iLCJhbGciOiJSUzI1NiJ9.eyJvcmlnaW5fanRpIjoiYjU5Y2YxNWEtY2VkOS00OTk4LWE4YzAtMGU5MWMyYTA3NzQwIiwic3ViIjoiZmU0MzU5MTgtMDkyYS00YmE4LWI5OTctNGMwYmY2Nzg1OWQwIiwiYXVkIjoiN2o4a3UyNjBiaWJvNGR0ZTJoOHZvNGM1cDgiLCJldmVudF9pZCI6IjBkZDI4ZmRmLTM0YTgtNDhlZC04YzY3LTQzZjM4ZGZjNGYwZCIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNjc3NDU0Mjc4LCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGhlYXN0LTEuYW1hem9uYXdzLmNvbVwvYXAtc291dGhlYXN0LTFfU2x5M01XVkM4IiwiY29nbml0bzp1c2VybmFtZSI6ImRrIiwiZXhwIjoxNjc3NDU3ODc4LCJpYXQiOjE2Nzc0NTQyNzgsImp0aSI6ImY2NTYxN2NlLTkwNmEtNDA5YS05OGZlLTgzYjBmMmYxYWExNCJ9.D2SfSVPq2uPnpfHPVLpw0-jZs9Wjgiazwd06jkQV76r9TFWJeyE2crbEnMUtUIiD4NZ64KPVA4NraNsqCH7QmGmWP-iR3wo7FKKHG4x0q82c7fXyj5QhRHSkLG-MzkynWhuQR327ENNWxA-4HlO9tQhAMuFgRV6NJlXchKk5t1IbCz3a_kdCWAYlyxLILHHt0kc0WjwQ1aTYkCvlSbbud9u6mLJulsHh7EdjkNljywrretu7XMOTEbPiOHSRcvBS6UiXYxwz_kWzd6XbDqN9UAAITLpzaVhH_6L4z7Qd89I1BHrbfJ9yztRiVTwKazgSGmi5qLuQnM_BSNszAgMwvA"
 
 	token, err := auth.Parse(jwt)
 	if err != nil {
@@ -31,4 +28,8 @@ func Test_getJWT(t *testing.T) {
 	if !token.Valid {
 		t.Fail()
 	}
+}
+
+func TestParse(t *testing.T) {
+
 }
