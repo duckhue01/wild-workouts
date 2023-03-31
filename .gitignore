@@ -1,7 +1,8 @@
 # developer generated
-_
+.terraform
 temp
-
+secret.env
 
 # machine generated
-.DS_Store 
+.DS_Store
+# node_modules

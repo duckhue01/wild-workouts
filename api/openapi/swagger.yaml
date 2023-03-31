@@ -1,0 +1,95 @@
+openapi: 3.0.2
+info:
+  title: API Title
+  version: '1.0'
+  license:
+    name: DK
+    url: this is license link
+servers:
+  - url: https://api.server.test/v1
+paths:
+  /test:
+    get:
+      operationId: TestEndPoint
+      summary: Get test information
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - demo_other
+      security:
+        - bearerAuth: []
+  /user:
+    get:
+      operationId: GetUserInformation
+      summary: Get user information
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      tags:
+        - user_other
+      security:
+        - bearerAuth: []
+tags:
+  - name: demo_other
+    x-displayName: other
+  - name: user_other
+    x-displayName: other
+x-tagGroups:
+  - name: demo
+    tags:
+      - demo_other
+  - name: user
+    tags:
+      - user_other
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Test:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    Error:
+      type: object
+      required:
+        - message
+        - code
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+    User:
+      type: object
+      required:
+        - displayName
+        - balance
+        - role
+      properties:
+        displayName:
+          type: string
+        balance:
+          type: integer
+        role:
+          type: string

@@ -1,0 +1,8 @@
+go 1.20
+
+use (
+	./internal/user
+	./internal/demo
+	./internal/common
+
+)

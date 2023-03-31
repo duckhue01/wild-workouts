@@ -1,0 +1,55 @@
+openapi: '3.0.2'
+info:
+  title: API Title
+  version: '1.0'
+  license: 
+    name: DK
+    url: this is license link
+  
+servers:
+  - url: https://api.server.test/v1
+
+security:
+  - bearerAuth: []
+paths:
+  /demos:
+    get:
+      operationId: GetOneDemoById
+      summary: Get the demo record by it' id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Demo'
+        '404':
+            description: Not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Demo:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    Error:
+      type: object
+      required:
+        - message
+        - code
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
