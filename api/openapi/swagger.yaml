@@ -8,17 +8,17 @@ info:
 servers:
   - url: https://api.server.test/v1
 paths:
-  /test:
+  /demos:
     get:
-      operationId: TestEndPoint
-      summary: Get test information
+      operationId: ListAllDemos
+      summary: Get all of the demo
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Test'
+                $ref: '#/components/schemas/Demo'
         '404':
           description: Not found
           content:
@@ -63,7 +63,7 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    Test:
+    Demo:
       type: object
       required:
         - name

@@ -86,12 +86,12 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 
 // The interface specification for the client above.
 type ClientInterface interface {
-	// GetOneDemoById request
-	GetOneDemoById(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// ListAllDemos request
+	ListAllDemos(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
-func (c *Client) GetOneDemoById(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetOneDemoByIdRequest(c.Server)
+func (c *Client) ListAllDemos(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAllDemosRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -102,8 +102,8 @@ func (c *Client) GetOneDemoById(ctx context.Context, reqEditors ...RequestEditor
 	return c.Client.Do(req)
 }
 
-// NewGetOneDemoByIdRequest generates requests for GetOneDemoById
-func NewGetOneDemoByIdRequest(server string) (*http.Request, error) {
+// NewListAllDemosRequest generates requests for ListAllDemos
+func NewListAllDemosRequest(server string) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -172,11 +172,11 @@ func WithBaseURL(baseURL string) ClientOption {
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
-	// GetOneDemoById request
-	GetOneDemoByIdWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOneDemoByIdResponse, error)
+	// ListAllDemos request
+	ListAllDemosWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListAllDemosResponse, error)
 }
 
-type GetOneDemoByIdResponse struct {
+type ListAllDemosResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *Demo
@@ -184,7 +184,7 @@ type GetOneDemoByIdResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r GetOneDemoByIdResponse) Status() string {
+func (r ListAllDemosResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -192,31 +192,31 @@ func (r GetOneDemoByIdResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetOneDemoByIdResponse) StatusCode() int {
+func (r ListAllDemosResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-// GetOneDemoByIdWithResponse request returning *GetOneDemoByIdResponse
-func (c *ClientWithResponses) GetOneDemoByIdWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOneDemoByIdResponse, error) {
-	rsp, err := c.GetOneDemoById(ctx, reqEditors...)
+// ListAllDemosWithResponse request returning *ListAllDemosResponse
+func (c *ClientWithResponses) ListAllDemosWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListAllDemosResponse, error) {
+	rsp, err := c.ListAllDemos(ctx, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetOneDemoByIdResponse(rsp)
+	return ParseListAllDemosResponse(rsp)
 }
 
-// ParseGetOneDemoByIdResponse parses an HTTP response from a GetOneDemoByIdWithResponse call
-func ParseGetOneDemoByIdResponse(rsp *http.Response) (*GetOneDemoByIdResponse, error) {
+// ParseListAllDemosResponse parses an HTTP response from a ListAllDemosWithResponse call
+func ParseListAllDemosResponse(rsp *http.Response) (*ListAllDemosResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetOneDemoByIdResponse{
+	response := &ListAllDemosResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}

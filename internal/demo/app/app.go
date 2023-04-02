@@ -12,5 +12,5 @@ type Application struct {
 // }
 
 type Queries struct {
-	AllDemo query.AllDemosHandler
+	AllDemos query.AllDemosHandler
 }

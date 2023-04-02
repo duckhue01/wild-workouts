@@ -7,14 +7,29 @@ import (
 	"context"
 )
 
-const getDemo = `-- name: GetDemo :one
+const listAllDemos = `-- name: ListAllDemos :many
 SELECT id, name FROM demo
-WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetDemo(ctx context.Context, id int64) (Demo, error) {
-	row := q.db.QueryRowContext(ctx, getDemo, id)
-	var i Demo
-	err := row.Scan(&i.ID, &i.Name)
-	return i, err
+func (q *Queries) ListAllDemos(ctx context.Context) ([]Demo, error) {
+	rows, err := q.db.QueryContext(ctx, listAllDemos)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Demo{}
+	for rows.Next() {
+		var i Demo
+		if err := rows.Scan(&i.ID, &i.Name); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

@@ -7,7 +7,7 @@ import (
 )
 
 type Querier interface {
-	GetDemo(ctx context.Context, id int64) (Demo, error)
+	ListAllDemos(ctx context.Context) ([]Demo, error)
 }
 
 var _ Querier = (*Queries)(nil)

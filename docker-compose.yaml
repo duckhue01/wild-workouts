@@ -6,6 +6,21 @@ services:
       - ./api/openapi/swagger.yaml:/usr/share/nginx/html/swagger.yaml
     image: redocly/redoc
     ports:
-      - 80:80
+      - 8080:80
     environment:
       - SPEC_URL=swagger.yaml
+  demo-http:
+    build:
+      context: docker/local
+    volumes:
+      - ./internal:/internal
+      - ./.go/pkg:/go/pkg
+      - ./.go-cache:/go-cache
+    working_dir: /internal/demo
+    ports:
+      - "127.0.0.1:3000:$PORT"
+    env_file:
+      - .env
+    environment:
+      SERVER_TO_RUN: http
+      GOCACHE: /go-cache

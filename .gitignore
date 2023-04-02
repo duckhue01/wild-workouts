@@ -2,6 +2,9 @@
 .terraform
 temp
 secret.env
+.go/
+.go-cache/
+
 
 # machine generated
 .DS_Store

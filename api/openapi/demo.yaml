@@ -14,8 +14,8 @@ security:
 paths:
   /demos:
     get:
-      operationId: GetOneDemoById
-      summary: Get the demo record by it' id
+      operationId: ListAllDemos
+      summary: Get all of the demo
       responses:
         '200':
           description: OK
@@ -25,10 +25,7 @@ paths:
                 $ref: '#/components/schemas/Demo'
         '404':
             description: Not found
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Error'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -43,13 +40,3 @@ components:
       properties:
         name:
           type: string
-    Error:
-      type: object
-      required:
-        - message
-        - code
-      properties:
-        message:
-          type: string
-        code:
-          type: integer

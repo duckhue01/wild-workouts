@@ -13,9 +13,9 @@ import (
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-	// Get the demo record by it' id
+	// Get all of the demo
 	// (GET /demos)
-	GetOneDemoById(w http.ResponseWriter, r *http.Request)
+	ListAllDemos(w http.ResponseWriter, r *http.Request)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -27,14 +27,14 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(http.Handler) http.Handler
 
-// GetOneDemoById operation middleware
-func (siw *ServerInterfaceWrapper) GetOneDemoById(w http.ResponseWriter, r *http.Request) {
+// ListAllDemos operation middleware
+func (siw *ServerInterfaceWrapper) ListAllDemos(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	ctx = context.WithValue(ctx, BearerAuthScopes, []string{""})
 
 	var handler http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetOneDemoById(w, r)
+		siw.Handler.ListAllDemos(w, r)
 	})
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -158,7 +158,7 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/demos", wrapper.GetOneDemoById)
+		r.Get(options.BaseURL+"/demos", wrapper.ListAllDemos)
 	})
 
 	return r

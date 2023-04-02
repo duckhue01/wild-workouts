@@ -1,6 +1,6 @@
 package query
 
 type Demo struct {
-	Id   int64
+	ID   int64
 	Name string
 }

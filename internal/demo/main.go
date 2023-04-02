@@ -6,12 +6,12 @@ import (
 	"net/http"
 
 	"github.com/duckhue01/wild-workouts/internal/common/logs"
+	"github.com/duckhue01/wild-workouts/internal/common/server"
 	"github.com/duckhue01/wild-workouts/internal/demo/ports"
 	"github.com/duckhue01/wild-workouts/internal/demo/service"
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
-	"go-micro.dev/v4/server"
 )
 
 type Config struct {
@@ -39,9 +39,6 @@ func init() {
 }
 
 func main() {
-	fmt.Printf("%+v", config)
-	fmt.Printf("%+v", secret)
-
 	ctx := context.Background()
 
 	app := service.NewApplication(ctx)
