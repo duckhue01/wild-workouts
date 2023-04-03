@@ -20,10 +20,10 @@ func (d commandLoggingDecorator[C]) Handle(ctx context.Context, cmd C) (err erro
 		"command_body": fmt.Sprintf("%#v", cmd),
 	})
 
-	logger.Debug("Executing command")
+	logger.Debug("executing command")
 	defer func() {
 		if err == nil {
-			logger.Info("Command executed successfully")
+			logger.Info("command executed successfully")
 		} else {
 			logger.WithError(err).Error("Failed to execute command")
 		}
@@ -46,9 +46,9 @@ func (d queryLoggingDecorator[C, R]) Handle(ctx context.Context, cmd C) (result 
 	logger.Debug("Executing query")
 	defer func() {
 		if err == nil {
-			logger.Info("Query executed successfully")
+			logger.Info("query executed successfully")
 		} else {
-			logger.WithError(err).Error("Failed to execute query")
+			logger.WithError(err).Error("failed to execute query")
 		}
 	}()
 

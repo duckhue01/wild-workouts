@@ -21,7 +21,8 @@ func NewHttpServer(app app.Application) HttpServer {
 func (h HttpServer) ListAllDemos(w http.ResponseWriter, r *http.Request) {
 	resp, err := h.app.Queries.AllDemos.Handle(r.Context(), query.AllDemos{})
 	if err != nil {
-		httperr.RespondWithSlugError(err, w, r)
+		httperr.BadRequest("asdasd", err, w, r)
+		return
 	}
 
 	demos := make([]Demo, 0, len(resp))

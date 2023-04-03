@@ -14,7 +14,6 @@
 
 import ApiClient from "../ApiClient";
 import Demo from '../model/Demo';
-import Error from '../model/Error';
 
 /**
 * Default service.

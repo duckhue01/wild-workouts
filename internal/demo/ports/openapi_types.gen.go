@@ -11,9 +11,3 @@ const (
 type Demo struct {
 	Name string `json:"name"`
 }
-
-// Error defines model for Error.
-type Error struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-}

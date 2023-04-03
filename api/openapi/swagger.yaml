@@ -21,10 +21,6 @@ paths:
                 $ref: '#/components/schemas/Demo'
         '404':
           description: Not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
       tags:
         - demo_other
       security:
@@ -40,6 +36,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '404':
+          description: Not Found
       tags:
         - user_other
       security:
@@ -70,16 +68,6 @@ components:
       properties:
         name:
           type: string
-    Error:
-      type: object
-      required:
-        - message
-        - code
-      properties:
-        message:
-          type: string
-        code:
-          type: integer
     User:
       type: object
       required:

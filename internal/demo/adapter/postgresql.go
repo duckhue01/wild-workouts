@@ -3,9 +3,13 @@ package adapter
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/duckhue01/wild-workouts/internal/demo/app/query"
 	"github.com/duckhue01/wild-workouts/internal/demo/postgres/sqlc"
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 type Postgres struct {
@@ -14,6 +18,21 @@ type Postgres struct {
 }
 
 func NewPostgres(db *sql.DB) *Postgres {
+
+	driver, err := postgres.WithInstance(db, &postgres.Config{})
+	if err != nil {
+		panic(fmt.Errorf("fatal can not create driver instance: %w", err))
+	}
+
+	m, err := migrate.NewWithDatabaseInstance("file:///../postgres/migration", "postgres", driver)
+	if err != nil {
+		panic(fmt.Errorf("fatal can not create migration instance: %w", err))
+	}
+
+	err = m.Up()
+	if err != nil {
+		panic(fmt.Errorf("fatal can not migrate database: %w", err))
+	}
 
 	return &Postgres{
 		db:  db,

@@ -1,11 +1,14 @@
 include .env
 
+.PHONY: bootstrap
+bootstrap: openapi
+
 .PHONY: openapi
-openapi: openapi_http openapi_js merge_openapi_docs
+openapi: openapi_http openapi_js merge_openapi_docs sqlc
 
 .PHONY: merge_openapi_docs
 merge_openapi_docs:
-	docker run --rm -v /Users/duckhue01/code/side/wild-workouts/api/openapi:/spec	redocly/cli join \
+	docker run --rm -v $(shell pwd)/api/openapi:/spec	redocly/cli join \
 	/spec/demo.yaml \
 	/spec/user.yaml \
 	-o ./swagger.yaml
@@ -19,8 +22,3 @@ openapi_http:
 openapi_js:
 	@./scripts/openapi/generate_client.sh demo
 	@./scripts/openapi/generate_client.sh user
-
-
-.PHONY: sqlc
-sqlc:
-	sqlc generate

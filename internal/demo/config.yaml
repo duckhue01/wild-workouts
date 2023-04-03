@@ -1,4 +1,6 @@
 database:
-  port: 1000
-  host: asd
-  username: asdas
+  port: 5432
+  host: postgres
+  username: postgres
+  name: tribe
+env: local

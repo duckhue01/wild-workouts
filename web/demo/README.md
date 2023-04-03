@@ -129,7 +129,6 @@ Class | Method | HTTP request | Description
 ## Documentation for Models
 
  - [ApiTitle.Demo](docs/Demo.md)
- - [ApiTitle.Error](docs/Error.md)
 
 
 ## Documentation for Authorization

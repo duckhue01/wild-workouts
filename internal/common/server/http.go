@@ -1,16 +1,17 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
-	"os"
 
-	"github.com/go-chi/chi/v5"
+	"github.com/duckhue01/wild-workouts/internal/common/logs"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5"
 	"github.com/sirupsen/logrus"
 )
 
-func Run(createHandler func(router chi.Router) http.Handler) {
-	run(":"+os.Getenv("PORT"), createHandler)
+func Run(createHandler func(router chi.Router) http.Handler, port int) {
+	run(fmt.Sprintf(":%d", port), createHandler)
 }
 
 func run(addr string, createHandler func(router chi.Router) http.Handler) {
@@ -21,18 +22,18 @@ func run(addr string, createHandler func(router chi.Router) http.Handler) {
 	// we are mounting all APIs under /api path
 	rootRouter.Mount("/api", createHandler(apiRouter))
 
-	logrus.Info("Starting HTTP server")
+	logrus.Info("starting HTTP server")
 
 	err := http.ListenAndServe(addr, rootRouter)
 	if err != nil {
-		logrus.WithError(err).Panic("Unable to start HTTP server")
+		logrus.WithError(err).Panic("unable to start HTTP server")
 	}
 }
 
 func setMiddleWares(router *chi.Mux) {
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
-	// router.Use(logs.NewStructuredLogger(logrus.StandardLogger()))
+	router.Use(logs.NewStructuredLogger(logrus.StandardLogger()))
 	router.Use(middleware.Recoverer)
 
 	router.Use(
@@ -42,7 +43,7 @@ func setMiddleWares(router *chi.Mux) {
 	router.Use(middleware.NoCache)
 }
 
-// todo: add CORS middleware
+// // todo: add CORS middleware
 // func addCorsMiddleware(router *chi.Mux) {
 // 	allowedOrigins := strings.Split(os.Getenv("CORS_ALLOWED_ORIGINS"), ";")
 // 	if len(allowedOrigins) == 0 {
@@ -59,7 +60,8 @@ func setMiddleWares(router *chi.Mux) {
 // 	})
 // 	router.Use(corsMiddleware.Handler)
 // }
-// todo: add auth middleware
+
+// // todo: add auth middleware
 // func addAuthMiddleware(router *chi.Mux) {
 // 	if mockAuth, _ := strconv.ParseBool(os.Getenv("MOCK_AUTH")); mockAuth {
 // 		router.Use(auth.HttpMockMiddleware)

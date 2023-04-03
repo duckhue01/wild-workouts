@@ -14,7 +14,6 @@
 
 import ApiClient from './ApiClient';
 import Demo from './model/Demo';
-import Error from './model/Error';
 import DefaultApi from './api/DefaultApi';
 
 
@@ -61,12 +60,6 @@ export {
      * @property {module:model/Demo}
      */
     Demo,
-
-    /**
-     * The Error model constructor.
-     * @property {module:model/Error}
-     */
-    Error,
 
     /**
     * The DefaultApi service constructor.

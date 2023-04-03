@@ -9,15 +9,15 @@ import (
 )
 
 func InternalError(slug string, err error, w http.ResponseWriter, r *http.Request) {
-	httpRespondWithError(err, slug, w, r, "Internal server error", http.StatusInternalServerError)
+	httpRespondWithError(err, slug, w, r, "internal server error", http.StatusInternalServerError)
 }
 
-func Unauthorised(slug string, err error, w http.ResponseWriter, r *http.Request) {
-	httpRespondWithError(err, slug, w, r, "Unauthorised", http.StatusUnauthorized)
+func Unauthorized(slug string, err error, w http.ResponseWriter, r *http.Request) {
+	httpRespondWithError(err, slug, w, r, "unauthorized", http.StatusUnauthorized)
 }
 
 func BadRequest(slug string, err error, w http.ResponseWriter, r *http.Request) {
-	httpRespondWithError(err, slug, w, r, "Bad request", http.StatusBadRequest)
+	httpRespondWithError(err, slug, w, r, "bad request", http.StatusBadRequest)
 }
 
 func RespondWithSlugError(err error, w http.ResponseWriter, r *http.Request) {
@@ -29,7 +29,7 @@ func RespondWithSlugError(err error, w http.ResponseWriter, r *http.Request) {
 
 	switch slugError.ErrorType() {
 	case errors.ErrorTypeAuthorization:
-		Unauthorised(slugError.Slug(), slugError, w, r)
+		Unauthorized(slugError.Slug(), slugError, w, r)
 	case errors.ErrorTypeIncorrectInput:
 		BadRequest(slugError.Slug(), slugError, w, r)
 	default:
