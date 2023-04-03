@@ -1,7 +1,7 @@
 # developer generated
 .terraform
 temp
-secret.env
+secret.yaml
 .go/
 .go-cache/
 

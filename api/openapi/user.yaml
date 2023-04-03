@@ -23,6 +23,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '404':
+          description: Not Found
 
 components:
   securitySchemes:

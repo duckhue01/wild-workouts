@@ -24,5 +24,11 @@ func (h HttpServer) ListAllDemos(w http.ResponseWriter, r *http.Request) {
 		httperr.RespondWithSlugError(err, w, r)
 	}
 
-	render.Respond(w, r, resp)
+	demos := make([]Demo, 0, len(resp))
+
+	for i := 0; i < len(resp); i++ {
+		demos = append(demos, Demo{Name: resp[i].Name})
+	}
+
+	render.Respond(w, r, demos)
 }
