@@ -2,11 +2,11 @@ DB_URL=postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable
 
 .PHONY: migrate_up
 migrate_up:
- 	docker run -v $(shell pwd)/postgres/migration:/migrations --network host migrate/migrate -path=/migrations/ -database "$(DB_URL)" database up
+ 	docker run --rm -v $(shell pwd)/postgres/migration:/migrations --network host migrate/migrate -path=/migrations/ -database "$(DB_URL)" database up
 
 .PHONY: migrate_down
 migrate_down:
- 	docker run -v $(shell pwd)/postgres/migration:/migrations --network host migrate/migrate -path=/migrations/ -database "$(DB_URL)" database up
+ 	docker run --rm -v $(shell pwd)/postgres/migration:/migrations --network host migrate/migrate -path=/migrations/ -database "$(DB_URL)" database up
 
 .PHONY: test
 test:
@@ -18,4 +18,5 @@ server:
 
 .PHONY: sqlc
 sqlc:
-	sqlc generate
+	docker run --rm -v $(shell pwd):/src -w /src kjconroy/sqlc generate
+

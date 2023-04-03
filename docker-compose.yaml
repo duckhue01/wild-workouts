@@ -10,6 +10,8 @@ services:
       - SPEC_URL=swagger.yaml
   service_base:
     &service_base
+    build:
+      context: docker/service/local
     networks:
       default:
         aliases:
@@ -19,12 +21,29 @@ services:
     # hack for docker-compose v3 dropping `extends` support
     <<: *service_base
     build:
-      context: docker/local
+      context: docker/service/local
     volumes:
       - ./internal:/internal
       - ./.go/pkg:/go/pkg
       - ./.go-cache:/go-cache
     working_dir: /internal/demo
+    ports:
+      - "127.0.0.1:3000:$PORT"
+    env_file:
+      - .env
+    environment:
+      SERVER_TO_RUN: http
+      GOCACHE: /go-cache
+  user-http:
+    # hack for docker-compose v3 dropping `extends` support
+    <<: *service_base
+    build:
+      context: docker/local
+    volumes:
+      - ./internal:/internal
+      - ./.go/pkg:/go/pkg
+      - ./.go-cache:/go-cache
+    working_dir: /internal/user
     ports:
       - "127.0.0.1:3000:$PORT"
     env_file:
@@ -61,7 +80,6 @@ services:
       - database:/var/lib/postgres/data/
     env_file:
       - .env
-      
 
 volumes:
   database:
