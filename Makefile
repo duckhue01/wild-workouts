@@ -17,7 +17,7 @@ merge_openapi_docs:
 	@docker run --rm -v $(shell pwd)/api/openapi:/spec	redocly/cli join \
 	/spec/demo.yaml \
 	/spec/user.yaml \
-	-o ./swagger.yaml
+	-o ./merged/swagger.yaml
 
 .PHONY: openapi_http
 openapi_http:

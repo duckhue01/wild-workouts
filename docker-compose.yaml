@@ -2,7 +2,7 @@ name: wild-workouts
 services:
   api-doc:
     volumes:
-      - ./api/openapi/swagger.yaml:/usr/share/nginx/html/swagger.yaml
+      - ./api/openapi/merged/swagger.yaml:/usr/share/nginx/html/swagger.yaml
     image: redocly/redoc
     ports:
       - 8080:80
