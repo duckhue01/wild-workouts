@@ -38,6 +38,8 @@ paths:
                 $ref: '#/components/schemas/User'
         '404':
           description: Not Found
+        '405':
+          description: Not Found
       tags:
         - user_other
       security:
