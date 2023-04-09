@@ -1,13 +1,27 @@
 name: wild-workouts
 services:
-  api-doc:
+  api-build:
     volumes:
-      - ./api/openapi/merged/swagger.yaml:/usr/share/nginx/html/swagger.yaml
-    image: redocly/redoc
+      - ./api/openapi:/spec
+    image: redocly/cli
+    command:
+      [
+        "join",
+        "/spec/user.yaml",
+        "/spec/demo.yaml",
+        "-o",
+        "/spec/merged/swagger.yaml"
+      ]
+
+  api-preview:
+    depends_on: [ api-build ]
+    volumes:
+      - ./api/openapi:/spec
+    image: redocly/cli
     ports:
-      - 8080:80
-    environment:
-      - SPEC_URL=swagger.yaml
+      - 8080:8080
+
+    command: [ "preview-docs", "/spec/merged/swagger.yaml" ]
   service_base:
     &service_base
     build:
@@ -51,24 +65,6 @@ services:
     environment:
       SERVER_TO_RUN: http
       GOCACHE: /go-cache
-
-  # demo-grpc:
-  #   # hack for docker-compose v3 dropping `extends` support
-  #   <<: *service_base
-  #   build:
-  #     context: docker/local
-  #   volumes:
-  #     - ./internal:/internal
-  #     - ./.go/pkg:/go/pkg
-  #     - ./.go-cache:/go-cache
-  #   working_dir: /internal/demo
-  #   ports:
-  #     - "127.0.0.1:3001:$PORT"
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     SERVER_TO_RUN: http
-  #     GOCACHE: /go-cache
 
   portgres:
     # hack for docker-compose v3 dropping `extends` support
