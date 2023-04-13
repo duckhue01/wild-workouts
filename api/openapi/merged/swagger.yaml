@@ -8,6 +8,23 @@ info:
 servers:
   - url: https://api.server.test/v1
 paths:
+  /user:
+    get:
+      operationId: GetUserInformation
+      summary: Get user information
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Not Found
+      tags:
+        - user_other
+      security:
+        - bearerAuth: []
   /demos:
     get:
       operationId: ListAllDemos
@@ -25,37 +42,18 @@ paths:
         - demo_other
       security:
         - bearerAuth: []
-  /user:
-    get:
-      operationId: GetUserInformation
-      summary: Get user information
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '404':
-          description: Not Found
-        '405':
-          description: Not Found
-      tags:
-        - user_other
-      security:
-        - bearerAuth: []
 tags:
-  - name: demo_other
-    x-displayName: other
   - name: user_other
     x-displayName: other
+  - name: demo_other
+    x-displayName: other
 x-tagGroups:
-  - name: demo
-    tags:
-      - demo_other
   - name: user
     tags:
       - user_other
+  - name: demo
+    tags:
+      - demo_other
 components:
   securitySchemes:
     bearerAuth:
@@ -63,13 +61,6 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    Demo:
-      type: object
-      required:
-        - name
-      properties:
-        name:
-          type: string
     User:
       type: object
       required:
@@ -82,4 +73,11 @@ components:
         balance:
           type: integer
         role:
+          type: string
+    Demo:
+      type: object
+      required:
+        - name
+      properties:
+        name:
           type: string

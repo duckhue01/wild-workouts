@@ -4,4 +4,5 @@ use (
 	./internal/user
 	./internal/demo
 	./internal/common
+	./internal/notif
 )

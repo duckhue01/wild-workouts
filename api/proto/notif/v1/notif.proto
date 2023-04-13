@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package notif.v1;
+
+option go_package = "notifv1";
+
+
+message Notif {
+  int64 id = 1;
+  string name = 2;
+}

@@ -3,7 +3,7 @@ package httperr
 import (
 	"net/http"
 
-	"github.com/duckhue01/wild-workouts/internal/common/errors"
+	"github.com/duckhue01/wild-workouts/internal/common/cmerror"
 	"github.com/duckhue01/wild-workouts/internal/common/logs"
 	"github.com/go-chi/render"
 )
@@ -21,16 +21,16 @@ func BadRequest(slug string, err error, w http.ResponseWriter, r *http.Request) 
 }
 
 func RespondWithSlugError(err error, w http.ResponseWriter, r *http.Request) {
-	slugError, ok := err.(errors.SlugError)
+	slugError, ok := err.(cmerror.SlugError)
 	if !ok {
 		InternalError("internal-server-error", err, w, r)
 		return
 	}
 
 	switch slugError.ErrorType() {
-	case errors.ErrorTypeAuthorization:
+	case cmerror.ErrorTypeAuthorization:
 		Unauthorized(slugError.Slug(), slugError, w, r)
-	case errors.ErrorTypeIncorrectInput:
+	case cmerror.ErrorTypeIncorrectInput:
 		BadRequest(slugError.Slug(), slugError, w, r)
 	default:
 		InternalError(slugError.Slug(), slugError, w, r)

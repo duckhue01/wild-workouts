@@ -1,4 +1,4 @@
-package errors
+package cmerror
 
 type ErrorType struct {
 	t string

@@ -6,7 +6,7 @@ This project is build to:
 - [Wild Workout](#wild-workout)
   - [Table of contents](#table-of-contents)
   - [How to get up and running](#how-to-get-up-and-running)
-    - [Before clone repository, make sure you have:](#before-clone-repository-make-sure-you-have)
+    - [Before you begin, make sure you have:](#before-you-begin-make-sure-you-have)
     - [Install packages](#install-packages)
     - [Create `secret.yaml`](#create-secretyaml)
     - [Bootstrap project](#bootstrap-project)
@@ -26,11 +26,13 @@ This project is build to:
 
 ## How to get up and running
 
-### Before clone repository, make sure you have:
+### Before you begin, make sure you have:
 
 1. The latest version of `git` is installed
 2. The latest version of `docker` is installed
 3. The latest version of `go` is installed
+4. The buf tool `buf:^1.17.x` is installed
+5. the oapi-codegen tool `deepmap/oapi-codegen:^v1.12.x` is installed
 
 
 ### Install packages

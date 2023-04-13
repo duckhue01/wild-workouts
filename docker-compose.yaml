@@ -19,21 +19,11 @@ services:
       - ./api/openapi:/spec
     image: redocly/cli
     ports:
-      - 8080:8080
+      - "127.0.0.1:8080:8080"
 
     command: [ "preview-docs", "/spec/merged/swagger.yaml" ]
-  service_base:
-    &service_base
-    build:
-      context: docker/service/local
-    networks:
-      default:
-        aliases:
-          - api.local
 
   demo-http:
-    # hack for docker-compose v3 dropping `extends` support
-    <<: *service_base
     build:
       context: docker/service/local
     volumes:
@@ -48,27 +38,8 @@ services:
     environment:
       SERVER_TO_RUN: http
       GOCACHE: /go-cache
-  user-http:
-    # hack for docker-compose v3 dropping `extends` support
-    <<: *service_base
-    build:
-      context: docker/local
-    volumes:
-      - ./internal:/internal
-      - ./.go/pkg:/go/pkg
-      - ./.go-cache:/go-cache
-    working_dir: /internal/user
-    ports:
-      - "127.0.0.1:3000:$PORT"
-    env_file:
-      - .env
-    environment:
-      SERVER_TO_RUN: http
-      GOCACHE: /go-cache
 
   portgres:
-    # hack for docker-compose v3 dropping `extends` support
-    <<: *service_base
     image: postgres:alpine
     ports:
       - 5432:5432
@@ -76,6 +47,11 @@ services:
       - database:/var/lib/postgres/data/
     env_file:
       - .env
-
+  nats:
+    image: nats:latest
+    ports:
+      - 4222:4222
+      - 8222:8222
+      - 6222:6222
 volumes:
   database:

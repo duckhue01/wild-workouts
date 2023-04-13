@@ -2,16 +2,14 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/duckhue01/wild-workouts/internal/common/logs"
 	"github.com/duckhue01/wild-workouts/internal/common/metrics"
+	"github.com/duckhue01/wild-workouts/internal/common/service"
 	"github.com/duckhue01/wild-workouts/internal/demo/adapter"
 	"github.com/duckhue01/wild-workouts/internal/demo/app"
 	"github.com/duckhue01/wild-workouts/internal/demo/app/query"
-	"github.com/mitchellh/mapstructure"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 type Config struct {
@@ -34,18 +32,19 @@ var config = new(Config)
 var secret = new(Secret)
 
 func init() {
-	err := readSecret()
+	var err error
+
+	secret, err = service.ReadSecret[Secret](".", "config", "yaml")
 	if err != nil {
 		panic(err)
 	}
 
-	err = readConfig()
+	config, err = service.ReadConfig[Config](".", "config", "yaml")
 	if err != nil {
 		panic(err)
 	}
 
 	logs.Init(config.Env)
-
 }
 
 func NewApplication(ctx context.Context) app.Application {
@@ -60,36 +59,4 @@ func NewApplication(ctx context.Context) app.Application {
 			AllDemos: query.NewAllDemosHandler(hourRepository, logger, metricsClient),
 		},
 	}
-}
-
-func readConfig() error {
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
-	if err := viper.ReadInConfig(); err != nil {
-		return fmt.Errorf("read config file: %w", err)
-	}
-
-	if err := viper.UnmarshalExact(config, func(dc *mapstructure.DecoderConfig) {
-		dc.ErrorUnset = true
-	}); err != nil {
-		return fmt.Errorf("unmarshal config: %w", err)
-	}
-	return nil
-}
-
-func readSecret() error {
-	viper.SetConfigName("secret")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
-	if err := viper.ReadInConfig(); err != nil {
-		return fmt.Errorf("read secret file: %w", err)
-	}
-
-	if err := viper.UnmarshalExact(secret, func(dc *mapstructure.DecoderConfig) {
-		dc.ErrorUnset = true
-	}); err != nil {
-		return fmt.Errorf("unmarshal secret: %w", err)
-	}
-	return nil
 }
