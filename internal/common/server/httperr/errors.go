@@ -21,16 +21,16 @@ func BadRequest(slug string, err error, w http.ResponseWriter, r *http.Request) 
 }
 
 func RespondWithSlugError(err error, w http.ResponseWriter, r *http.Request) {
-	slugError, ok := err.(cmerror.SlugError)
+	slugError, ok := err.(cmerror.Error)
 	if !ok {
 		InternalError("internal-server-error", err, w, r)
 		return
 	}
 
 	switch slugError.ErrorType() {
-	case cmerror.ErrorTypeAuthorization:
+	case cmerror.TypAuthorization:
 		Unauthorized(slugError.Slug(), slugError, w, r)
-	case cmerror.ErrorTypeIncorrectInput:
+	case cmerror.TypIncorrectInput:
 		BadRequest(slugError.Slug(), slugError, w, r)
 	default:
 		InternalError(slugError.Slug(), slugError, w, r)

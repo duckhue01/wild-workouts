@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/duckhue01/wild-workouts/internal/common/cmerror"
 	"github.com/sirupsen/logrus"
 )
 
@@ -47,9 +48,21 @@ func (d queryLoggingDecorator[C, R]) Handle(ctx context.Context, cmd C) (result 
 	defer func() {
 		if err == nil {
 			logger.Info("query executed successfully")
-		} else {
-			logger.WithError(err).Error("failed to execute query")
+			return
 		}
+
+		if cmerr, ok := err.(cmerror.Error); ok {
+			switch cmerr.ErrorType() {
+			case cmerror.TypUnexpected:
+				logger.WithError(err).Error("failed to execute query")
+			default:
+				logger.WithError(err).Warning("failed to execute query")
+			}
+
+			return
+		}
+
+		logger.WithError(err).Warning("failed to execute query")
 	}()
 
 	return d.base.Handle(ctx, cmd)

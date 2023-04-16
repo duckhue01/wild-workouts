@@ -1,53 +1,64 @@
 package cmerror
 
-type ErrorType struct {
-	t string
-}
+type Typ int
 
-var (
-	ErrorTypeUnknown        = ErrorType{"unknown"}
-	ErrorTypeAuthorization  = ErrorType{"authorization"}
-	ErrorTypeIncorrectInput = ErrorType{"incorrect-input"}
+const (
+	TypUnexpected Typ = iota
+	TypAuthorization
+	TypIncorrectInput
+	TypDomainError
 )
 
-type SlugError struct {
-	error     string
-	slug      string
-	errorType ErrorType
+const (
+	InternalServerError string = "internal-server-error"
+)
+
+type Error struct {
+	error string
+	slug  string
+	typ   Typ
 }
 
-func (s SlugError) Error() string {
+func (s Error) Error() string {
 	return s.error
 }
 
-func (s SlugError) Slug() string {
+func (s Error) Slug() string {
 	return s.slug
 }
 
-func (s SlugError) ErrorType() ErrorType {
-	return s.errorType
+func (s Error) ErrorType() Typ {
+	return s.typ
 }
 
-func NewSlugError(error string, slug string) SlugError {
-	return SlugError{
-		error:     error,
-		slug:      slug,
-		errorType: ErrorTypeUnknown,
+func New(error string, slug string, typ Typ) Error {
+	return Error{
+		error: error,
+		slug:  slug,
+		typ:   typ,
 	}
 }
 
-func NewAuthorizationError(error string, slug string) SlugError {
-	return SlugError{
-		error:     error,
-		slug:      slug,
-		errorType: ErrorTypeAuthorization,
+func NewUnexpectedError(error string, slug string) Error {
+	return Error{
+		error: error,
+		slug:  slug,
+		typ:   TypUnexpected,
 	}
 }
 
-func NewIncorrectInputError(error string, slug string) SlugError {
-	return SlugError{
-		error:     error,
-		slug:      slug,
-		errorType: ErrorTypeIncorrectInput,
+func NewAuthorizationError(error string, slug string) Error {
+	return Error{
+		error: error,
+		slug:  slug,
+		typ:   TypAuthorization,
+	}
+}
+
+func NewIncorrectInputError(error string, slug string) Error {
+	return Error{
+		error: error,
+		slug:  slug,
+		typ:   TypIncorrectInput,
 	}
 }

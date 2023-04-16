@@ -11,6 +11,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/deepmap/oapi-codegen/pkg/runtime"
 )
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
@@ -86,12 +88,12 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 
 // The interface specification for the client above.
 type ClientInterface interface {
-	// ListAllDemos request
-	ListAllDemos(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// ListCurrentUserDemos request
+	ListCurrentUserDemos(ctx context.Context, params *ListCurrentUserDemosParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
-func (c *Client) ListAllDemos(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListAllDemosRequest(c.Server)
+func (c *Client) ListCurrentUserDemos(ctx context.Context, params *ListCurrentUserDemosParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListCurrentUserDemosRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -102,8 +104,8 @@ func (c *Client) ListAllDemos(ctx context.Context, reqEditors ...RequestEditorFn
 	return c.Client.Do(req)
 }
 
-// NewListAllDemosRequest generates requests for ListAllDemos
-func NewListAllDemosRequest(server string) (*http.Request, error) {
+// NewListCurrentUserDemosRequest generates requests for ListCurrentUserDemos
+func NewListCurrentUserDemosRequest(server string, params *ListCurrentUserDemosParams) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -120,6 +122,22 @@ func NewListAllDemosRequest(server string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	queryValues := queryURL.Query()
+
+	if queryFrag, err := runtime.StyleParamWithLocation("form", true, "error", runtime.ParamLocationQuery, params.Error); err != nil {
+		return nil, err
+	} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+		return nil, err
+	} else {
+		for k, v := range parsed {
+			for _, v2 := range v {
+				queryValues.Add(k, v2)
+			}
+		}
+	}
+
+	queryURL.RawQuery = queryValues.Encode()
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
@@ -172,18 +190,18 @@ func WithBaseURL(baseURL string) ClientOption {
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
-	// ListAllDemos request
-	ListAllDemosWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListAllDemosResponse, error)
+	// ListCurrentUserDemos request
+	ListCurrentUserDemosWithResponse(ctx context.Context, params *ListCurrentUserDemosParams, reqEditors ...RequestEditorFn) (*ListCurrentUserDemosResponse, error)
 }
 
-type ListAllDemosResponse struct {
+type ListCurrentUserDemosResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *Demo
 }
 
 // Status returns HTTPResponse.Status
-func (r ListAllDemosResponse) Status() string {
+func (r ListCurrentUserDemosResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -191,31 +209,31 @@ func (r ListAllDemosResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r ListAllDemosResponse) StatusCode() int {
+func (r ListCurrentUserDemosResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-// ListAllDemosWithResponse request returning *ListAllDemosResponse
-func (c *ClientWithResponses) ListAllDemosWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListAllDemosResponse, error) {
-	rsp, err := c.ListAllDemos(ctx, reqEditors...)
+// ListCurrentUserDemosWithResponse request returning *ListCurrentUserDemosResponse
+func (c *ClientWithResponses) ListCurrentUserDemosWithResponse(ctx context.Context, params *ListCurrentUserDemosParams, reqEditors ...RequestEditorFn) (*ListCurrentUserDemosResponse, error) {
+	rsp, err := c.ListCurrentUserDemos(ctx, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseListAllDemosResponse(rsp)
+	return ParseListCurrentUserDemosResponse(rsp)
 }
 
-// ParseListAllDemosResponse parses an HTTP response from a ListAllDemosWithResponse call
-func ParseListAllDemosResponse(rsp *http.Response) (*ListAllDemosResponse, error) {
+// ParseListCurrentUserDemosResponse parses an HTTP response from a ListCurrentUserDemosWithResponse call
+func ParseListCurrentUserDemosResponse(rsp *http.Response) (*ListCurrentUserDemosResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &ListAllDemosResponse{
+	response := &ListCurrentUserDemosResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}

@@ -1,31 +1,8 @@
 name: wild-workouts
 services:
-  api-build:
-    volumes:
-      - ./api/openapi:/spec
-    image: redocly/cli
-    command:
-      [
-        "join",
-        "/spec/user.yaml",
-        "/spec/demo.yaml",
-        "-o",
-        "/spec/merged/swagger.yaml"
-      ]
-
-  api-preview:
-    depends_on: [ api-build ]
-    volumes:
-      - ./api/openapi:/spec
-    image: redocly/cli
-    ports:
-      - "127.0.0.1:8080:8080"
-
-    command: [ "preview-docs", "/spec/merged/swagger.yaml" ]
-
   demo-http:
     build:
-      context: docker/service/local
+      context: docker/local
     volumes:
       - ./internal:/internal
       - ./.go/pkg:/go/pkg

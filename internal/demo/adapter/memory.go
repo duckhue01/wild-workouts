@@ -2,6 +2,7 @@ package adapter
 
 import (
 	"context"
+	"errors"
 
 	"github.com/duckhue01/wild-workouts/internal/demo/app/query"
 )
@@ -14,7 +15,12 @@ func NewMemory() *Memory {
 	return &Memory{}
 }
 
-func (a *Memory) ListAllDemos(_ context.Context) ([]*query.Demo, error) {
+func (a *Memory) ListAllDemos(_ context.Context, q query.ListCurrentUserDemosQuery) ([]*query.Demo, error) {
+
+	if q.WantError {
+		return nil, errors.New("da ta bey deo get duoc demos")
+
+	}
 
 	return []*query.Demo{
 		{
@@ -26,4 +32,5 @@ func (a *Memory) ListAllDemos(_ context.Context) ([]*query.Demo, error) {
 			Name: "Damwon Kia",
 		},
 	}, nil
+
 }

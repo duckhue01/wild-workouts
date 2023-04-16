@@ -8,14 +8,15 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/deepmap/oapi-codegen/pkg/runtime"
 	"github.com/go-chi/chi/v5"
 )
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-	// Get all of the demo
+	// Get all of user's the demo
 	// (GET /demos)
-	ListAllDemos(w http.ResponseWriter, r *http.Request)
+	ListCurrentUserDemos(w http.ResponseWriter, r *http.Request, params ListCurrentUserDemosParams)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -27,14 +28,34 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(http.Handler) http.Handler
 
-// ListAllDemos operation middleware
-func (siw *ServerInterfaceWrapper) ListAllDemos(w http.ResponseWriter, r *http.Request) {
+// ListCurrentUserDemos operation middleware
+func (siw *ServerInterfaceWrapper) ListCurrentUserDemos(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+
+	var err error
 
 	ctx = context.WithValue(ctx, BearerAuthScopes, []string{""})
 
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListCurrentUserDemosParams
+
+	// ------------- Required query parameter "error" -------------
+
+	if paramValue := r.URL.Query().Get("error"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "error"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "error", r.URL.Query(), &params.Error)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "error", Err: err})
+		return
+	}
+
 	var handler http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListAllDemos(w, r)
+		siw.Handler.ListCurrentUserDemos(w, r, params)
 	})
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -158,7 +179,7 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/demos", wrapper.ListAllDemos)
+		r.Get(options.BaseURL+"/demos", wrapper.ListCurrentUserDemos)
 	})
 
 	return r

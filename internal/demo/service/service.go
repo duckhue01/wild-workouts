@@ -34,7 +34,7 @@ var secret = new(Secret)
 func init() {
 	var err error
 
-	secret, err = service.ReadSecret[Secret](".", "config", "yaml")
+	secret, err = service.ReadSecret[Secret](".", "secret", "yaml")
 	if err != nil {
 		panic(err)
 	}

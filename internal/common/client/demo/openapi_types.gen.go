@@ -11,3 +11,9 @@ const (
 type Demo struct {
 	Name string `json:"name"`
 }
+
+// ListCurrentUserDemosParams defines parameters for ListCurrentUserDemos.
+type ListCurrentUserDemosParams struct {
+	// Error determine whether have error or not
+	Error bool `form:"error" json:"error"`
+}

@@ -25,7 +25,8 @@ paths:
                 $ref: '#/components/schemas/User'
         '404':
           description: Not Found
-
+      tags: 
+        -  user
 components:
   securitySchemes:
     bearerAuth:
@@ -47,3 +48,6 @@ components:
         role:
           type: string
 
+tags: 
+  - name: user  
+    description: user
