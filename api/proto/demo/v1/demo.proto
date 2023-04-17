@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package demo.v1;
+
 option go_package = "github.com/duckhue01/wild-workouts/internal/demo";
 
 message Demo {
