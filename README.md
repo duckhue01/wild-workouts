@@ -1,6 +1,7 @@
 # Wild Workout
 This project is build to:
 - solve the real life microservice problem 
+- apply openapi document driven development
 
 ## Table of contents
 - [Wild Workout](#wild-workout)

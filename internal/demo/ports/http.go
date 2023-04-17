@@ -1,9 +1,7 @@
 package ports
 
 import (
-	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/go-chi/render"
 
@@ -21,15 +19,9 @@ func NewHttpServer(app app.Application) HttpServer {
 }
 
 func (h HttpServer) ListCurrentUserDemos(w http.ResponseWriter, r *http.Request, params ListCurrentUserDemosParams) {
-	queryParams := r.URL.Query()
-	temp := queryParams.Get("error")
-
-	errorp, _ := strconv.ParseBool(temp)
-
-	fmt.Println(params)
 
 	resp, err := h.app.Queries.AllDemos.Handle(r.Context(), query.ListCurrentUserDemosQuery{
-		WantError: errorp,
+		WantError: params.Error,
 	})
 	if err != nil {
 		httperr.RespondWithSlugError(err, w, r)
@@ -43,4 +35,8 @@ func (h HttpServer) ListCurrentUserDemos(w http.ResponseWriter, r *http.Request,
 	}
 
 	render.Respond(w, r, demos)
+}
+
+func (h HttpServer) CreateCurrentUserDemo(w http.ResponseWriter, r *http.Request, params CreateCurrentUserDemoParams) {
+
 }

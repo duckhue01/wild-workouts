@@ -1,0 +1,298 @@
+openapi: 3.0.0
+info:
+  description: >
+    This is a sample server Petstore server.
+
+    You can find out more about Swagger at
+
+    [http://swagger.io](http://swagger.io) or on [irc.freenode.net,
+    #swagger](http://swagger.io/irc/).
+
+    For this sample, you can use the api key `special-key` to test the
+    authorization filters.
+
+
+    # Introduction
+
+    This API is documented in **OpenAPI format** and is based on
+
+    [Petstore sample](http://petstore.swagger.io/) provided by
+    [swagger.io](http://swagger.io) team.
+
+    It was **extended** to illustrate features of
+    [generator-openapi-repo](https://github.com/Rebilly/generator-openapi-repo)
+
+    tool and [ReDoc](https://github.com/Redocly/redoc) documentation. In
+    addition to standard
+
+    OpenAPI syntax we use a few [vendor
+    extensions](https://github.com/Redocly/redoc/blob/main/docs/redoc-vendor-extensions.md).
+
+
+    # OpenAPI Specification
+
+    This API is documented in **OpenAPI format** and is based on
+
+    [Petstore sample](http://petstore.swagger.io/) provided by
+    [swagger.io](http://swagger.io) team.
+
+    It was **extended** to illustrate features of
+    [generator-openapi-repo](https://github.com/Rebilly/generator-openapi-repo)
+
+    tool and [ReDoc](https://github.com/Redocly/redoc) documentation. In
+    addition to standard
+
+    OpenAPI syntax we use a few [vendor
+    extensions](https://github.com/Redocly/redoc/blob/main/docs/redoc-vendor-extensions.md).
+
+
+    # Cross-Origin Resource Sharing
+
+    This API features Cross-Origin Resource Sharing (CORS) implemented in
+    compliance with  [W3C spec](https://www.w3.org/TR/cors/).
+
+    And that allows cross-domain communication from the browser.
+
+    All responses have a wildcard same-origin which makes them completely public
+    and accessible to everyone, including any code on any site.
+
+
+    # Authentication
+
+
+    Petstore offers two forms of authentication:
+      - API Key
+      - OAuth2
+    OAuth2 - an open protocol to allow secure authorization in a simple
+
+    and standard method from web, mobile and desktop applications.
+
+
+    <SecurityDefinitions />
+  version: 1.0.0
+  title: Swagger Petstore
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: API Support
+    email: apiteam@swagger.io
+    url: https://github.com/Redocly/redoc
+  x-logo:
+    url: https://redocly.github.io/redoc/petstore-logo.png
+    altText: Petstore logo
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+tags:
+  - name: demo
+    description: Everything about your Demo
+    x-displayName: demo
+  - name: composer
+    description: Compose Demo
+    x-displayName: composer
+  - name: customer
+    description: Everything about your Customer
+    x-displayName: customer
+  - name: user
+    description: Everything about your User
+    x-displayName: user
+x-tagGroups:
+  - name: demo
+    tags:
+      - demo
+      - composer
+    description: >
+      This is a sample server Petstore server.
+
+      You can find out more about Swagger at
+
+      [http://swagger.io](http://swagger.io) or on [irc.freenode.net,
+      #swagger](http://swagger.io/irc/).
+
+      For this sample, you can use the api key `special-key` to test the
+      authorization filters.
+
+
+      # Introduction
+
+      This API is documented in **OpenAPI format** and is based on
+
+      [Petstore sample](http://petstore.swagger.io/) provided by
+      [swagger.io](http://swagger.io) team.
+
+      It was **extended** to illustrate features of
+      [generator-openapi-repo](https://github.com/Rebilly/generator-openapi-repo)
+
+      tool and [ReDoc](https://github.com/Redocly/redoc) documentation. In
+      addition to standard
+
+      OpenAPI syntax we use a few [vendor
+      extensions](https://github.com/Redocly/redoc/blob/main/docs/redoc-vendor-extensions.md).
+
+
+      # OpenAPI Specification
+
+      This API is documented in **OpenAPI format** and is based on
+
+      [Petstore sample](http://petstore.swagger.io/) provided by
+      [swagger.io](http://swagger.io) team.
+
+      It was **extended** to illustrate features of
+      [generator-openapi-repo](https://github.com/Rebilly/generator-openapi-repo)
+
+      tool and [ReDoc](https://github.com/Redocly/redoc) documentation. In
+      addition to standard
+
+      OpenAPI syntax we use a few [vendor
+      extensions](https://github.com/Redocly/redoc/blob/main/docs/redoc-vendor-extensions.md).
+
+
+      # Cross-Origin Resource Sharing
+
+      This API features Cross-Origin Resource Sharing (CORS) implemented in
+      compliance with  [W3C spec](https://www.w3.org/TR/cors/).
+
+      And that allows cross-domain communication from the browser.
+
+      All responses have a wildcard same-origin which makes them completely
+      public and accessible to everyone, including any code on any site.
+
+
+      # Authentication
+
+
+      Petstore offers two forms of authentication:
+        - API Key
+        - OAuth2
+      OAuth2 - an open protocol to allow secure authorization in a simple
+
+      and standard method from web, mobile and desktop applications.
+
+
+      <SecurityDefinitions />
+  - name: user
+    tags:
+      - customer
+      - user
+servers:
+  - url: //petstore.swagger.io/v2
+    description: Default server
+  - url: //petstore.swagger.io/sandbox
+    description: Sandbox server
+  - url: https://api.server.test/v1
+externalDocs:
+  description: Find out how to create Github repo for your OpenAPI spec.
+  url: https://github.com/Rebilly/generator-openapi-repo
+paths:
+  /demos:
+    parameters:
+      - name: Accept-Language
+        in: header
+        description: >-
+          The language you prefer for messages. Supported values are en-AU,
+          en-CA, en-GB, en-US
+        example: en-US
+        required: false
+        schema:
+          type: string
+          default: en-AU
+    get:
+      operationId: ListCurrentUserDemos
+      summary: Get all of user's the demo
+      description: Get all of user's the demo
+      parameters:
+        - name: error
+          in: query
+          description: determine whether have error or not
+          required: true
+          style: form
+          schema:
+            type: boolean
+          example: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Demo'
+        '404':
+          description: Not found
+      tags:
+        - demo
+      security:
+        - bearerAuth: []
+    put:
+      operationId: CreateCurrentUserDemo
+      summary: Create current user demo
+      description: Create current user demo
+      requestBody:
+        $ref: '#/components/requestBodies/DemoRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Demo'
+        '404':
+          description: Not found
+      tags:
+        - demo
+      security:
+        - bearerAuth: []
+  /user:
+    get:
+      operationId: GetUserInformation
+      summary: Get user information
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Not Found
+      tags:
+        - user
+      security:
+        - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Demo:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: document 1
+    User:
+      type: object
+      required:
+        - displayName
+        - balance
+        - role
+      properties:
+        displayName:
+          type: string
+        balance:
+          type: integer
+        role:
+          type: string
+  requestBodies:
+    DemoRequest:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - description: My Demo
+                title: Pettie
+              - $ref: '#/components/schemas/Demo'
+      description: Demo object that needs to be added to the store
+      required: true

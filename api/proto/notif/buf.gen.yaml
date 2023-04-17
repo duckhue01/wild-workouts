@@ -1,0 +1,10 @@
+version: v1
+plugins:
+  - plugin: go
+    out: ../../../internal/common/protogen/notif
+    opt: paths=source_relative
+  - plugin: go-grpc
+    out: ../../../internal/common/protogen/notif
+    opt:
+      - paths=source_relative
+      - require_unimplemented_servers=false

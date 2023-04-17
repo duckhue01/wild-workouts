@@ -1,4 +1,4 @@
-openapi: '3.0.2'
+openapi: 3.0.0
 info:
   title: API Title
   version: '1.0'
@@ -48,6 +48,14 @@ components:
         role:
           type: string
 
-tags: 
-  - name: user  
-    description: user
+tags:
+  - name: customer
+    description: Everything about your Customer
+  - name: user
+    description: Everything about your User
+
+x-tagGroups:
+  - name:  User Management
+    tags:
+      - customer
+      - user

@@ -3,7 +3,7 @@ package query
 import (
 	"context"
 
-	"github.com/duckhue01/wild-workouts/internal/common/cmerror"
+	"github.com/duckhue01/wild-workouts/internal/common/cmerr"
 	"github.com/duckhue01/wild-workouts/internal/common/decorator"
 	"github.com/sirupsen/logrus"
 )
@@ -41,10 +41,10 @@ type ListCurrentUserDemosRM interface {
 func (h allDemosHandler) Handle(ctx context.Context, q ListCurrentUserDemosQuery) (tr []*Demo, err error) {
 	demos, err := h.rm.ListAllDemos(ctx, q)
 	if err != nil {
-		return nil, cmerror.New(
+		return nil, cmerr.New(
 			err.Error(),
-			cmerror.InternalServerError,
-			cmerror.TypDomainError,
+			cmerr.InternalServerError,
+			cmerr.TypDomainError,
 		)
 	}
 

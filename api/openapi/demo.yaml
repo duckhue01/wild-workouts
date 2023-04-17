@@ -99,7 +99,7 @@ paths:
       summary: Create current user demo
       description: Create current user demo
       requestBody: 
-        $ref: '#/components/requestBodies/Demo'
+        $ref: '#/components/requestBodies/DemoRequest'
         
       responses:
         '200':
@@ -129,7 +129,7 @@ components:
           type: string
           example: document 1
   requestBodies: 
-    Demo:
+    DemoRequest:
       content:
         application/json:
           schema:

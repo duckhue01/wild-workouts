@@ -17,6 +17,9 @@ type ServerInterface interface {
 	// Get all of user's the demo
 	// (GET /demos)
 	ListCurrentUserDemos(w http.ResponseWriter, r *http.Request, params ListCurrentUserDemosParams)
+	// Create current user demo
+	// (PUT /demos)
+	CreateCurrentUserDemo(w http.ResponseWriter, r *http.Request, params CreateCurrentUserDemoParams)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -54,8 +57,72 @@ func (siw *ServerInterfaceWrapper) ListCurrentUserDemos(w http.ResponseWriter, r
 		return
 	}
 
+	headers := r.Header
+
+	// ------------- Optional header parameter "Accept-Language" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Accept-Language")]; found {
+		var AcceptLanguage string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Accept-Language", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithLocation("simple", false, "Accept-Language", runtime.ParamLocationHeader, valueList[0], &AcceptLanguage)
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Accept-Language", Err: err})
+			return
+		}
+
+		params.AcceptLanguage = &AcceptLanguage
+
+	}
+
 	var handler http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListCurrentUserDemos(w, r, params)
+	})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// CreateCurrentUserDemo operation middleware
+func (siw *ServerInterfaceWrapper) CreateCurrentUserDemo(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateCurrentUserDemoParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Accept-Language" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Accept-Language")]; found {
+		var AcceptLanguage string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Accept-Language", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithLocation("simple", false, "Accept-Language", runtime.ParamLocationHeader, valueList[0], &AcceptLanguage)
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Accept-Language", Err: err})
+			return
+		}
+
+		params.AcceptLanguage = &AcceptLanguage
+
+	}
+
+	var handler http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateCurrentUserDemo(w, r, params)
 	})
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -180,6 +247,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/demos", wrapper.ListCurrentUserDemos)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/demos", wrapper.CreateCurrentUserDemo)
 	})
 
 	return r

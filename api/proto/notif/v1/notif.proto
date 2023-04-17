@@ -2,8 +2,7 @@ syntax = "proto3";
 
 package notif.v1;
 
-option go_package = "notifv1";
-
+option go_package = "github.com/duckhue01/wild-workouts/internal/notif";
 
 message Notif {
   int64 id = 1;

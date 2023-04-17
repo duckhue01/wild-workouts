@@ -12,8 +12,30 @@ type Demo struct {
 	Name string `json:"name"`
 }
 
+// DemoRequest defines model for DemoRequest.
+type DemoRequest struct {
+	Name string `json:"name"`
+}
+
 // ListCurrentUserDemosParams defines parameters for ListCurrentUserDemos.
 type ListCurrentUserDemosParams struct {
 	// Error determine whether have error or not
 	Error bool `form:"error" json:"error"`
+
+	// AcceptLanguage The language you prefer for messages. Supported values are en-AU, en-CA, en-GB, en-US
+	AcceptLanguage *string `json:"Accept-Language,omitempty"`
 }
+
+// CreateCurrentUserDemoJSONBody defines parameters for CreateCurrentUserDemo.
+type CreateCurrentUserDemoJSONBody struct {
+	Name string `json:"name"`
+}
+
+// CreateCurrentUserDemoParams defines parameters for CreateCurrentUserDemo.
+type CreateCurrentUserDemoParams struct {
+	// AcceptLanguage The language you prefer for messages. Supported values are en-AU, en-CA, en-GB, en-US
+	AcceptLanguage *string `json:"Accept-Language,omitempty"`
+}
+
+// CreateCurrentUserDemoJSONRequestBody defines body for CreateCurrentUserDemo for application/json ContentType.
+type CreateCurrentUserDemoJSONRequestBody CreateCurrentUserDemoJSONBody

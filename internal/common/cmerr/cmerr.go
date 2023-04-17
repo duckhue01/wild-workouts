@@ -1,4 +1,4 @@
-package cmerror
+package cmerr
 
 type Typ int
 

@@ -4,6 +4,7 @@
 package demo
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -90,10 +91,39 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 type ClientInterface interface {
 	// ListCurrentUserDemos request
 	ListCurrentUserDemos(ctx context.Context, params *ListCurrentUserDemosParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateCurrentUserDemo request with any body
+	CreateCurrentUserDemoWithBody(ctx context.Context, params *CreateCurrentUserDemoParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateCurrentUserDemo(ctx context.Context, params *CreateCurrentUserDemoParams, body CreateCurrentUserDemoJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) ListCurrentUserDemos(ctx context.Context, params *ListCurrentUserDemosParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListCurrentUserDemosRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateCurrentUserDemoWithBody(ctx context.Context, params *CreateCurrentUserDemoParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateCurrentUserDemoRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateCurrentUserDemo(ctx context.Context, params *CreateCurrentUserDemoParams, body CreateCurrentUserDemoJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateCurrentUserDemoRequest(c.Server, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -144,6 +174,68 @@ func NewListCurrentUserDemosRequest(server string, params *ListCurrentUserDemosP
 		return nil, err
 	}
 
+	if params.AcceptLanguage != nil {
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Accept-Language", runtime.ParamLocationHeader, *params.AcceptLanguage)
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("Accept-Language", headerParam0)
+	}
+
+	return req, nil
+}
+
+// NewCreateCurrentUserDemoRequest calls the generic CreateCurrentUserDemo builder with application/json body
+func NewCreateCurrentUserDemoRequest(server string, params *CreateCurrentUserDemoParams, body CreateCurrentUserDemoJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateCurrentUserDemoRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewCreateCurrentUserDemoRequestWithBody generates requests for CreateCurrentUserDemo with any type of body
+func NewCreateCurrentUserDemoRequestWithBody(server string, params *CreateCurrentUserDemoParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/demos")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params.AcceptLanguage != nil {
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Accept-Language", runtime.ParamLocationHeader, *params.AcceptLanguage)
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("Accept-Language", headerParam0)
+	}
+
 	return req, nil
 }
 
@@ -192,6 +284,11 @@ func WithBaseURL(baseURL string) ClientOption {
 type ClientWithResponsesInterface interface {
 	// ListCurrentUserDemos request
 	ListCurrentUserDemosWithResponse(ctx context.Context, params *ListCurrentUserDemosParams, reqEditors ...RequestEditorFn) (*ListCurrentUserDemosResponse, error)
+
+	// CreateCurrentUserDemo request with any body
+	CreateCurrentUserDemoWithBodyWithResponse(ctx context.Context, params *CreateCurrentUserDemoParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCurrentUserDemoResponse, error)
+
+	CreateCurrentUserDemoWithResponse(ctx context.Context, params *CreateCurrentUserDemoParams, body CreateCurrentUserDemoJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateCurrentUserDemoResponse, error)
 }
 
 type ListCurrentUserDemosResponse struct {
@@ -216,6 +313,28 @@ func (r ListCurrentUserDemosResponse) StatusCode() int {
 	return 0
 }
 
+type CreateCurrentUserDemoResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Demo
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateCurrentUserDemoResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateCurrentUserDemoResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 // ListCurrentUserDemosWithResponse request returning *ListCurrentUserDemosResponse
 func (c *ClientWithResponses) ListCurrentUserDemosWithResponse(ctx context.Context, params *ListCurrentUserDemosParams, reqEditors ...RequestEditorFn) (*ListCurrentUserDemosResponse, error) {
 	rsp, err := c.ListCurrentUserDemos(ctx, params, reqEditors...)
@@ -223,6 +342,23 @@ func (c *ClientWithResponses) ListCurrentUserDemosWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseListCurrentUserDemosResponse(rsp)
+}
+
+// CreateCurrentUserDemoWithBodyWithResponse request with arbitrary body returning *CreateCurrentUserDemoResponse
+func (c *ClientWithResponses) CreateCurrentUserDemoWithBodyWithResponse(ctx context.Context, params *CreateCurrentUserDemoParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCurrentUserDemoResponse, error) {
+	rsp, err := c.CreateCurrentUserDemoWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateCurrentUserDemoResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateCurrentUserDemoWithResponse(ctx context.Context, params *CreateCurrentUserDemoParams, body CreateCurrentUserDemoJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateCurrentUserDemoResponse, error) {
+	rsp, err := c.CreateCurrentUserDemo(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateCurrentUserDemoResponse(rsp)
 }
 
 // ParseListCurrentUserDemosResponse parses an HTTP response from a ListCurrentUserDemosWithResponse call
@@ -234,6 +370,32 @@ func ParseListCurrentUserDemosResponse(rsp *http.Response) (*ListCurrentUserDemo
 	}
 
 	response := &ListCurrentUserDemosResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Demo
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateCurrentUserDemoResponse parses an HTTP response from a CreateCurrentUserDemoWithResponse call
+func ParseCreateCurrentUserDemoResponse(rsp *http.Response) (*CreateCurrentUserDemoResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateCurrentUserDemoResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
