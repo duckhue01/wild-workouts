@@ -23,7 +23,7 @@ type ListCurrentUserDemosParams struct {
 	Error bool `form:"error" json:"error"`
 
 	// AcceptLanguage The language you prefer for messages. Supported values are en-AU, en-CA, en-GB, en-US
-	AcceptLanguage *string `json:"Accept-Language,omitempty"`
+	AcceptLanguage string `json:"Accept-Language"`
 }
 
 // CreateCurrentUserDemoJSONBody defines parameters for CreateCurrentUserDemo.
@@ -34,7 +34,7 @@ type CreateCurrentUserDemoJSONBody struct {
 // CreateCurrentUserDemoParams defines parameters for CreateCurrentUserDemo.
 type CreateCurrentUserDemoParams struct {
 	// AcceptLanguage The language you prefer for messages. Supported values are en-AU, en-CA, en-GB, en-US
-	AcceptLanguage *string `json:"Accept-Language,omitempty"`
+	AcceptLanguage string `json:"Accept-Language"`
 }
 
 // CreateCurrentUserDemoJSONRequestBody defines body for CreateCurrentUserDemo for application/json ContentType.

@@ -174,16 +174,14 @@ func NewListCurrentUserDemosRequest(server string, params *ListCurrentUserDemosP
 		return nil, err
 	}
 
-	if params.AcceptLanguage != nil {
-		var headerParam0 string
+	var headerParam0 string
 
-		headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Accept-Language", runtime.ParamLocationHeader, *params.AcceptLanguage)
-		if err != nil {
-			return nil, err
-		}
-
-		req.Header.Set("Accept-Language", headerParam0)
+	headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Accept-Language", runtime.ParamLocationHeader, params.AcceptLanguage)
+	if err != nil {
+		return nil, err
 	}
+
+	req.Header.Set("Accept-Language", headerParam0)
 
 	return req, nil
 }
@@ -225,16 +223,14 @@ func NewCreateCurrentUserDemoRequestWithBody(server string, params *CreateCurren
 
 	req.Header.Add("Content-Type", contentType)
 
-	if params.AcceptLanguage != nil {
-		var headerParam0 string
+	var headerParam0 string
 
-		headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Accept-Language", runtime.ParamLocationHeader, *params.AcceptLanguage)
-		if err != nil {
-			return nil, err
-		}
-
-		req.Header.Set("Accept-Language", headerParam0)
+	headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Accept-Language", runtime.ParamLocationHeader, params.AcceptLanguage)
+	if err != nil {
+		return nil, err
 	}
+
+	req.Header.Set("Accept-Language", headerParam0)
 
 	return req, nil
 }

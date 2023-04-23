@@ -59,7 +59,7 @@ func (siw *ServerInterfaceWrapper) ListCurrentUserDemos(w http.ResponseWriter, r
 
 	headers := r.Header
 
-	// ------------- Optional header parameter "Accept-Language" -------------
+	// ------------- Required header parameter "Accept-Language" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Accept-Language")]; found {
 		var AcceptLanguage string
 		n := len(valueList)
@@ -74,8 +74,12 @@ func (siw *ServerInterfaceWrapper) ListCurrentUserDemos(w http.ResponseWriter, r
 			return
 		}
 
-		params.AcceptLanguage = &AcceptLanguage
+		params.AcceptLanguage = AcceptLanguage
 
+	} else {
+		err := fmt.Errorf("Header parameter Accept-Language is required, but not found")
+		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "Accept-Language", Err: err})
+		return
 	}
 
 	var handler http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -102,7 +106,7 @@ func (siw *ServerInterfaceWrapper) CreateCurrentUserDemo(w http.ResponseWriter, 
 
 	headers := r.Header
 
-	// ------------- Optional header parameter "Accept-Language" -------------
+	// ------------- Required header parameter "Accept-Language" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Accept-Language")]; found {
 		var AcceptLanguage string
 		n := len(valueList)
@@ -117,8 +121,12 @@ func (siw *ServerInterfaceWrapper) CreateCurrentUserDemo(w http.ResponseWriter, 
 			return
 		}
 
-		params.AcceptLanguage = &AcceptLanguage
+		params.AcceptLanguage = AcceptLanguage
 
+	} else {
+		err := fmt.Errorf("Header parameter Accept-Language is required, but not found")
+		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "Accept-Language", Err: err})
+		return
 	}
 
 	var handler http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

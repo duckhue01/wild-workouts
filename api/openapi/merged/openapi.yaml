@@ -191,7 +191,7 @@ paths:
           The language you prefer for messages. Supported values are en-AU,
           en-CA, en-GB, en-US
         example: en-US
-        required: false
+        required: true
         schema:
           type: string
           default: en-AU
