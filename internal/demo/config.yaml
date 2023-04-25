@@ -4,3 +4,7 @@ database:
   username: postgres
   name: tribe
 env: local
+port: 3000
+cognito:
+  region: "ap-southeast-1"
+  poolId: "ap-southeast-1_obUCyzUmx"

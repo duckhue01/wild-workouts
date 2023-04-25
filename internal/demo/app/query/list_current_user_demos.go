@@ -44,7 +44,7 @@ func (h allDemosHandler) Handle(ctx context.Context, q ListCurrentUserDemosQuery
 		return nil, cmerr.New(
 			err.Error(),
 			cmerr.InternalServerError,
-			cmerr.TypDomainError,
+			cmerr.TypUnexpected,
 		)
 	}
 

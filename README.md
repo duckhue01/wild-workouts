@@ -32,9 +32,9 @@ This project is build to:
 1. The latest version of `git` is installed
 2. The latest version of `docker` is installed
 3. The latest version of `go` is installed
-4. The buf tool `buf:^1.17.x` is installed
-5. The oapi-codegen tool `deepmap/oapi-codegen:^v1.12.x` is installed
-6. The redocly tool `redoc/redocly:^1.0.0-beta.123` is installed
+4. The buf tool `buf:1.17.x` is installed
+5. The oapi-codegen tool `deepmap/oapi-codegen:v1.12.x` is installed
+6. The redocly tool `redoc/redocly:1.0.0-beta.123` is installed
 
 
 ### Install packages

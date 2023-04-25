@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/render"
 
 	"github.com/duckhue01/wild-workouts/internal/common/server/httperr"
+
 	"github.com/duckhue01/wild-workouts/internal/demo/app"
 	"github.com/duckhue01/wild-workouts/internal/demo/app/query"
 )

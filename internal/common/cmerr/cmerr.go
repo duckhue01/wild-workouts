@@ -9,9 +9,7 @@ const (
 	TypDomainError
 )
 
-const (
-	InternalServerError string = "internal-server-error"
-)
+
 
 type Error struct {
 	error string

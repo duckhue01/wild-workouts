@@ -101,11 +101,8 @@ func (a *Auth) Parse(tokenString string) (*jwt.Token, error) {
 		key := convertKey(a.jwk.Keys[index].E, a.jwk.Keys[index].N)
 		return key, nil
 	})
-	if err != nil {
-		return token, err
-	}
 
-	return token, nil
+	return token, err
 }
 
 // JWK return JWK
