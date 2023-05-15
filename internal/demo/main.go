@@ -40,7 +40,11 @@ func main() {
 	parser := cognito.New(conf.Cognito.Region, conf.Cognito.PoolId)
 
 	app := service.NewApplication(ctx, sec, conf)
-	server.Run(func(router chi.Router) http.Handler {
-		return ports.HandlerFromMux(ports.NewHttpServer(app), router)
-	}, conf.Port, parser)
+	server.Run(server.Conf{
+		CreateHandler: func(router chi.Router) http.Handler {
+			return ports.HandlerFromMux(ports.NewHttpServer(app), router)
+		},
+		Port:   conf.Port,
+		Parser: parser,
+	})
 }

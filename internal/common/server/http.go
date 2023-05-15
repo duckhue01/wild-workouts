@@ -12,23 +12,25 @@ import (
 	"github.com/duckhue01/wild-workouts/internal/common/logs"
 )
 
-func Run(createHandler func(router chi.Router) http.Handler, port int, p auth.Parser) {
-	run(fmt.Sprintf(":%d", port), createHandler, p)
+type Conf struct {
+	CreateHandler func(router chi.Router) http.Handler
+	Port          int
+	Parser        auth.Parser
 }
 
-func run(addr string, createHandler func(router chi.Router) http.Handler, p auth.Parser) {
+func Run(c Conf) {
 	apiRouter := chi.NewRouter()
-	setMiddleWares(apiRouter, p)
+	setMiddleWares(apiRouter, c.Parser)
 
 	rootRouter := chi.NewRouter()
 	// we are mounting all APIs under /api path
-	rootRouter.Mount("/api", createHandler(apiRouter))
+	rootRouter.Mount("/api", c.CreateHandler(apiRouter))
 
-	logrus.Info("starting HTTP server")
+	logrus.Info("starting http server")
 
-	err := http.ListenAndServe(addr, rootRouter)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", c.Port), rootRouter)
 	if err != nil {
-		logrus.WithError(err).Panic("unable to start HTTP server")
+		logrus.WithError(err).Panic("unable to start http server")
 	}
 }
 
@@ -44,15 +46,12 @@ func setMiddleWares(router *chi.Mux, p auth.Parser) {
 	)
 	router.Use(middleware.NoCache)
 
-	// 	// todo: implement mock
-	// 	// if mockAuth, _ := strconv.ParseBool(os.Getenv("MOCK_AUTH")); mockAuth {
-	// 	// 	router.Use(auth.HttpMockMiddleware)
-	// 	// 	return
-	// 	// }
-	router.Use(auth.AuthMiddleware{P: p}.Middleware)
+	if p != nil {
+		router.Use(auth.AuthMiddleware{P: p}.Middleware)
+	}
 }
 
-// // todo: add CORS middleware
+// todo: add CORS middleware
 // func addCorsMiddleware(router *chi.Mux) {
 // 	allowedOrigins := strings.Split(os.Getenv("CORS_ALLOWED_ORIGINS"), ";")
 // 	if len(allowedOrigins) == 0 {
