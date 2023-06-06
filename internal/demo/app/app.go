@@ -1,6 +1,6 @@
 package app
 
-import "github.com/duckhue01/wild-workouts/internal/demo/app/query"
+import "github.com/tribefintech/microservices/internal/demo/app/query"
 
 type Application struct {
 	// Commands Commands

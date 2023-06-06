@@ -1,0 +1,817 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Tribe API Documentation
+  termsOfService: http://swagger.io/terms/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+tags:
+  - name: auth
+    description: Authentication Service
+    x-displayName: auth
+  - name: demo
+    description: Everything about your Demo
+    x-displayName: demo
+  - name: notif
+    description: Notification Service
+    x-displayName: notif
+x-tagGroups:
+  - name: auth
+    tags:
+      - auth
+  - name: demo
+    tags:
+      - demo
+  - name: notif
+    tags:
+      - notif
+servers:
+  - url: //api.dev.tribe.tymetribe.com
+    description: Default Server
+paths:
+  /auth/health:
+    get:
+      operationId: GetAuthHealthInformation
+      summary: Check Auth service status
+      description: Use for liveliness and readiness in k8s cluster
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Service cannot find the requested resource
+        '503':
+          description: Service is not ready to handle the request
+      tags:
+        - auth
+      security: []
+  /auth:login:
+    post:
+      operationId: Login
+      summary: Login
+      description: Login with email & password to get tokens
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequestBody'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/LoginResponse'
+                  - $ref: '#/components/schemas/Error'
+        '404':
+          description: Service cannot find the requested resource
+        '500':
+          description: >-
+            The server has encountered a situation it does not know how to
+            handle
+        '503':
+          description: Service is not ready to handle the request
+      tags:
+        - auth
+  /auth:signup:
+    post:
+      operationId: SignUp
+      summary: Create User Account
+      description: Create an user account
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequestBody'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/SignUpResponse'
+                  - $ref: '#/components/schemas/Error'
+        '404':
+          description: Service cannot find the requested resource
+        '500':
+          description: >-
+            The server has encountered a situation it does not know how to
+            handle
+        '503':
+          description: Service is not ready to handle the request
+      tags:
+        - auth
+  /auth:confirmsignup:
+    post:
+      operationId: ConfirmSignUp
+      summary: Confirm User Sign Up
+      description: User use code to confirm their sign up operation
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmSignUpRequestBody'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Error'
+        '204':
+          description: No Content
+        '404':
+          description: Service cannot find the requested resource
+        '500':
+          description: >-
+            The server has encountered a situation it does not know how to
+            handle
+        '503':
+          description: Service is not ready to handle the request
+      tags:
+        - auth
+  /auth/code:resend:
+    post:
+      operationId: ResendCode
+      summary: Resend Confirmation code
+      description: User use their email to resend the Sign Up Confirmation code
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResendCodeRequestBody'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Error'
+                  - $ref: '#/components/schemas/ResendCodeResponse'
+        '404':
+          description: Service cannot find the requested resource
+        '429':
+          description: The user has sent too many requests in a given amount of time
+        '500':
+          description: >-
+            The server has encountered a situation it does not know how to
+            handle
+        '503':
+          description: Service is not ready to handle the request
+      tags:
+        - auth
+  /auth/tokens:refresh:
+    post:
+      operationId: RefreshToken
+      summary: Refresh Tokens
+      description: >-
+        Get branch new token by refresh token. Each refresh token can use
+        multiple time
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequestBody'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Error'
+                  - $ref: '#/components/schemas/RefreshTokenResponse'
+        '404':
+          description: Service cannot find the requested resource
+        '429':
+          description: The user has sent too many requests in a given amount of time
+        '500':
+          description: >-
+            The server has encountered a situation it does not know how to
+            handle
+        '503':
+          description: Service is not ready to handle the request
+      tags:
+        - auth
+  /auth/password:forgot:
+    post:
+      operationId: ForgotPassword
+      summary: Reset User Password
+      description: >-
+        Get branch new token by refresh token. Each refresh token can use
+        multiple time
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequestBody'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Error'
+                  - $ref: '#/components/schemas/ForgotPasswordResponse'
+        '404':
+          description: Service cannot find the requested resource
+        '429':
+          description: The user has sent too many requests in a given amount of time
+        '500':
+          description: >-
+            The server has encountered a situation it does not know how to
+            handle
+        '503':
+          description: Service is not ready to handle the request
+      tags:
+        - auth
+  /auth/password:confirmforgot:
+    post:
+      operationId: ConfirmForgotPassword
+      summary: Confirm Forgot Password
+      description: >-
+        User verify their forgot password operation by verification code. If the
+        code correct the password will be changed
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequestBody'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ForgotPasswordResponse'
+                  - $ref: '#/components/schemas/Error'
+        '404':
+          description: Service cannot find the requested resource
+        '429':
+          description: The user has sent too many requests in a given amount of time
+        '500':
+          description: >-
+            The server has encountered a situation it does not know how to
+            handle
+        '503':
+          description: Service is not ready to handle the request
+      tags:
+        - auth
+  /auth/password:change:
+    post:
+      operationId: ChangePassword
+      summary: Change User Password
+      description: >-
+        User use their old password and Cognito access token token create new
+        password
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequestBody'
+      responses:
+        '200':
+          description: Response with error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Error'
+        '204':
+          description: Password is changed successfully
+        '404':
+          description: Service cannot find the requested resource
+        '500':
+          description: >-
+            The server has encountered a situation it does not know how to
+            handle
+        '503':
+          description: Service is not ready to handle the request
+      tags:
+        - auth
+  /demos:
+    parameters:
+      - name: Accept-Language
+        in: header
+        description: >-
+          The language you prefer for messages. Supported values are en-AU,
+          en-CA, en-GB, en-US
+        example: en-US
+        required: true
+        schema:
+          type: string
+          default: en-AU
+    get:
+      operationId: ListCurrentUserDemos
+      summary: Get all of user's the demo
+      description: Get all of user's the demo
+      parameters:
+        - name: error
+          in: query
+          description: determine whether have error or not
+          required: true
+          style: form
+          schema:
+            type: boolean
+          example: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Demo'
+        '404':
+          description: Not found
+      tags:
+        - demo
+      security:
+        - bearerAuth: []
+    put:
+      operationId: CreateCurrentUserDemo
+      summary: Create current user demo
+      description: Create current user demo
+      requestBody:
+        $ref: '#/components/requestBodies/DemoRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Demo'
+        '404':
+          description: Not found
+      tags:
+        - demo
+      security:
+        - bearerAuth: []
+  /notif/health:
+    get:
+      operationId: GetNotifHealthInformation
+      summary: Check Notification service status
+      description: Use for liveliness and readiness in k8s cluster
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Service cannot find the requested resource
+        '503':
+          description: Service is not ready to handle the request
+      tags:
+        - notif
+      security: []
+  /notif/ws:
+    post:
+      operationId: SubscribeNotification
+      summary: Subscribe to Notification Web (Type representation only)
+      description: Describe the notification types in Websocket channel
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/SocialMessageCreated'
+                  - $ref: '#/components/schemas/Ping'
+                  - $ref: '#/components/schemas/EndorsementRequestCreated'
+                  - $ref: '#/components/schemas/EducationCourseProgressRemind'
+        '404':
+          description: Service cannot find the requested resource
+        '503':
+          description: Service is not ready to handle the request
+      tags:
+        - notif
+      security:
+        - JWT: []
+  /notif/notifications:
+    get:
+      operationId: GetListUserNotifications
+      summary: Get Current User's Notifications
+      description: Use for liveliness and readiness in k8s cluster
+      parameters:
+        - name: token
+          in: query
+          description: the next_token is returned in previous query to get the next page
+          required: true
+          example: 6f3d61e4-5fee-4b5a-995a-02f65765fb32
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: the limitation of records will be returned
+          required: true
+          example: 10
+          schema:
+            type: integer
+            maximum: 100
+            minimum: 5
+            format: int
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Error'
+                  - type: object
+                    properties:
+                      notifications:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Notification'
+                      next_token:
+                        type: string
+                        example: 6f3d61e4-5fee-4b5a-995a-02f65765fb32
+                        description: the token will be use to get next page
+        '404':
+          description: Service cannot find the requested resource
+        '503':
+          description: Service is not ready to handle the request
+      tags:
+        - notif
+      security:
+        - JWT: []
+components:
+  schemas:
+    Error:
+      properties:
+        slug:
+          type: string
+          example: user-not-found
+      required:
+        - slug
+    LoginRequestBody:
+      properties:
+        email:
+          type: string
+          example: dk@vinova.com.sg
+          description: user email
+        password:
+          type: string
+          example: password123!
+          description: user password
+      type: object
+      required:
+        - email
+        - password
+    LoginResponse:
+      type: object
+      properties:
+        id_token:
+          type: string
+          example: >-
+            eyJraWQiOiJ4NytGSFp3SFFNUU55VkdleHl4bm9VN3RVS1JuU2ZcL1RJWFBPbWFUTUszRT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI2ZjNkNjFlNC01ZmVlLTRiNWEtOTk1YS0wMmY2NTc2NWZiMzIiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLmFwLXNvdXRoZWFzdC0xLmFtYXpvbmF3cy5jb21cL2FwLXNvdXRoZWFzdC0xX29iVUN5elVteCIsImNvZ25pdG86dXNlcm5hbWUiOiI2ZjNkNjFlNC01ZmVlLTRiNWEtOTk1YS0wMmY2NTc2NWZiMzIiLCJnaXZlbl9uYW1lIjoiRCIsIm9yaWdpbl9qdGkiOiI4Nzc0YWVjZi03YzNhLTQyY2YtYTljNS1hYzNiYmE4ODNmN2MiLCJhdWQiOiIzODdicGJscXRncnR1Y3EydnJsNjVrYXExNiIsImV2ZW50X2lkIjoiMTkxYWIyYmEtY2Y3Yi00MDk4LTlhYTktZDQzMzkzMWNkMzgwIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE2ODQxMjMyOTksImV4cCI6MTY4NDEyNjg5OSwiaWF0IjoxNjg0MTIzMjk5LCJmYW1pbHlfbmFtZSI6IksiLCJqdGkiOiIwNDIwMzAzMS0xOGQyLTQxNWEtYTNjNS03Zjk0YjIwMDFkYmEiLCJlbWFpbCI6ImRrQHZpbm92YS5jb20uc2cifQ.rG41n-Hdu155EIDBh9f_zpcOHFXq4w1WoTzim0D3gExnFV3EslzqCu8GeGn_kKbB29jsumG3eGrXr7UstnbbkyEjHh5LEk0lGwXht3gQRCsvTKzNZDmreXWO3ILuJuE1kkZmVHdKWNewNIeD4II8xfiGOFSCToKltI4AsSksoL0Ryj2gzcJil00KO0Yy1Q8j-P_Gu6TGG1r3F-9Ibx0SnjeBB2e6Up0_JJKsXNYYUYZskpZaYofkCV4XzkBaht8J4rSWHCMkNsupSROcaAXr7zXvDE8jTdnkeY3LiY1Z0URNmdA4JEedBe9v9MVqM5nV3owGT9sZTJIf0aGepcO_Tg
+        expire_in:
+          type: integer
+          format: int64
+          example: 3600
+        access_token:
+          type: string
+          example: >-
+            eyJraWQiOiJQdlpiQjZYNWx5UVJtajFCZnRBMndrcDB2R0FISHNuTHQxS1dmVWxoZlFrPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI2ZjNkNjFlNC01ZmVlLTRiNWEtOTk1YS0wMmY2NTc2NWZiMzIiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGhlYXN0LTEuYW1hem9uYXdzLmNvbVwvYXAtc291dGhlYXN0LTFfb2JVQ3l6VW14IiwiY2xpZW50X2lkIjoiMzg3YnBibHF0Z3J0dWNxMnZybDY1a2FxMTYiLCJvcmlnaW5fanRpIjoiODc3NGFlY2YtN2MzYS00MmNmLWE5YzUtYWMzYmJhODgzZjdjIiwiZXZlbnRfaWQiOiIxOTFhYjJiYS1jZjdiLTQwOTgtOWFhOS1kNDMzOTMxY2QzODAiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJzY29wZSI6ImF3cy5jb2duaXRvLnNpZ25pbi51c2VyLmFkbWluIiwiYXV0aF90aW1lIjoxNjg0MTIzMjk5LCJleHAiOjE2ODQxMjY4OTksImlhdCI6MTY4NDEyMzI5OSwianRpIjoiMWQyYzA4MGQtYjkyZS00ODhlLTkxMGUtNDM4MTQzM2IzOTVkIiwidXNlcm5hbWUiOiI2ZjNkNjFlNC01ZmVlLTRiNWEtOTk1YS0wMmY2NTc2NWZiMzIifQ.jIw8lIqRe7kgv1csdmK7fvUGZQHeIZd5VzbiKAYZ73Vx1kWL4ZG_8iyTLrtcR2pjaOpRKlRcnFdMpt1f8Sx-vv4JOA62ki0tQPN85e_cTMQM7XJsowqHmHeqYHl5AmxidNMWyY3gK--W95iEUiVqB6eDbvmuHE7gLgzdDYV_agErhstwGMJRO1ki1LfRan-NI0XhvKQz6MunhZQd7mB8v2spKoQg6uIOJ4xQ79Mlnvs-Nuuaw1HCxiv-jYcleLzbs3EBOQG3gfMer7_pMEmifghX_l8cDztpcmWNQ6pxXhyeyrKLqRgTVrg3dIKMi64RoFCW5ilzw9eSYGdKAMCZZA
+        token_type:
+          type: string
+          example: Bearer
+        refresh_token:
+          type: string
+          example: >-
+            eyJjdHkiOiJKV1QiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAifQ.gxofw5VwS0FprKCwiSNX03bgA84gXV6x9eingZHu1ajGh5jRjeWIU6fEHf1vPrQTA6X-_qCPCwRp1fBg32kTvXcPayqob2ZMPL5GSh2YlzUq4XVNlBMmzr5W-4KzeNo7KSxhIqzpIuydhxqKoBVkGYCpx-ZzvXK2TGPeEBHcgW1bi1b50Y7rcRTNv3MN4-8PpxdG4xI3YUlPPkNa7YGATc0V1d3FkHGbNpFeqh45a5K9xC84y7xxUTYpImkvSZqQzRMdTnMN57WDhe6KZvKSeENQh0O7pA_Or-_va0DWKwxv334kv5FADm2Kpi1X_B0rmtfBo2Sy3FA_51d8R7ESkQ.7w7otThGtNn5qr8f.GN6Z0fU7Iwlv2DIQKZgUjhtyYRr_IW0Q_ani3RjeucvZqBypv12GUZR2M_V7iusc3-CdtZpGzKr0g3h-PCOALYaSOjSE6KemEATgf6vf-0Jowldlq5RcSYgOunEX3wj6HIeyHkuiCWKeMLG70qsm9HWa3YOQgY8VwDHOwmZgbk5O05TnuvuHhwFcOzqYT0RrE3F9-Rl7xooeVZzWeEgF__tledlWquJjkWloA4xZkgiHl8l0ibZdLrcMUO4BdEv4FHDpthl6b5t2c3BgDoGs4HmwSnIT5taGenL2nfgrRE6FRAgv8JOem-kSfZzb_ZY5WMLX_3Oa2yRRcUJgiDrWp_iXbcgeQFoFSkXDibf8eV3Ynz-RrAvwRsf_WYp9zrurm_ZOjWIH1CAZKEF7vlTdiwMCMy_SHLFVHmMDOh0H9eUtg9yB4CjA-3Nh50iJCcf73Hca5_LQSIpY3pWq6frF5xF_HA41O2T5BDq_Nf1EdWFx9eO7i996iYhLZM218rMC2XgtQNUWIHkNalPyoQEv0VgKH3N26tadSN6y9C6puGFnLkURptK-Ty98dgrg9-L6d4z0wiP8gcsN0tVIKF4Cz0B5tUdY1rfFV8ePQLQ9AfE5rtADvEHvGoaNNa4PhBO7kPPBS5JNeKrTf-vPEYwOiVhh9wiWS9Cq9uK_FBxkTI-2f7vQBWC0ftESAFDzNQ5zyhFFyixfrRjF8LOiw4FNuigc8z3Pj2IjlB351kiEl-f9N0PyM58QGsT8N7xD3eY8EKEHRe4AdXX4ASFSWJHWdii6UmFyS8e5eIaSIR1FYyyggzdelYgvJ_DDpZrfT8RiCFrFBReU29JT0XvnbznidR2gPJBOrk1KeL-8pyIIlMJtqfSYQWUM87i50Vj13BqztaisRklSMWQlBFetWB45xl1QmZD9fDc7yIJyXhcDEqXrKADmpdxJDffLzYXCyyNnviWloXiJCkYThfCJdvekiCHf8Yud7SeEHhKB9e-Rb1RmM_Cjj6b5Zsl7xZr5w7npg0oIUK1gFfwgl_fWB2h8vTozsQqZVl2RVKcWxsDlxW_v5z0eQ2POJu3t5LA53cHiu7bPd86XGZlYZ4tXKeZUA1uR_IEYTwr7Z74rHyNnq9yxvhTJ5a-oIPl9CctDjl9wEOzmnWlol23a3rrckQ-SFMnoEs6MKXgD-691n1WxMy1Sey0L5GLJEsrfydu6inUwafQZ_5aAKdgBx7PBhJm1nwDaf6rpn43pEBsQc7ZJJhNn45L3FeHH1OgZYui-cxr_y-jWCgkhBWg8GENK4KgOBXLdkQICsi9QsUm4iQWtMb8GAX__Ta6cNf7sP0TcemFZtQVPvtEHLbam.E_B0LtCDnFlbXGr0_UxtDw
+      required:
+        - id_token
+        - expire_in
+        - access_token
+        - token_type
+        - refresh_token
+    SignUpRequestBody:
+      properties:
+        email:
+          type: string
+          example: dk@vinova.com.sg
+          description: user email
+        password:
+          type: string
+          example: password123!
+          description: user password
+        first_name:
+          type: string
+          example: Damwon
+          description: user first name
+        last_name:
+          type: string
+          example: Kia
+          description: user last name
+      type: object
+      required:
+        - email
+        - password
+        - first_name
+        - last_name
+    SignUpResponse:
+      properties:
+        destination:
+          type: string
+          example: abc
+        user_sub:
+          type: string
+          example: xyz
+      type: object
+      required:
+        - destination
+        - user_sub
+    ConfirmSignUpRequestBody:
+      properties:
+        email:
+          type: string
+          example: dk@vinova.com.sg
+          description: email that user used to sign up
+        code:
+          type: string
+          example: 496695
+          description: verification code
+      type: object
+      required:
+        - email
+        - code
+    ResendCodeRequestBody:
+      properties:
+        email:
+          type: string
+          example: dk@vinova.com.sg
+          description: email address will receive the code
+      type: object
+      required:
+        - email
+    ResendCodeResponse:
+      properties:
+        delivery_medium:
+          type: string
+          example: EMAIL
+          description: device that will receive code
+        destination:
+          type: string
+          example: dk@vinova.com.sg
+          description: email address will receive the code
+      type: object
+    RefreshTokenRequestBody:
+      properties:
+        refresh_token:
+          type: string
+          example: >-
+            eyJjdHkiOiJKV1QiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAifQ.gxofw5VwS0FprKCwiSNX03bgA84gXV6x9eingZHu1ajGh5jRjeWIU6fEHf1vPrQTA6X-_qCPCwRp1fBg32kTvXcPayqob2ZMPL5GSh2YlzUq4XVNlBMmzr5W-4KzeNo7KSxhIqzpIuydhxqKoBVkGYCpx-ZzvXK2TGPeEBHcgW1bi1b50Y7rcRTNv3MN4-8PpxdG4xI3YUlPPkNa7YGATc0V1d3FkHGbNpFeqh45a5K9xC84y7xxUTYpImkvSZqQzRMdTnMN57WDhe6KZvKSeENQh0O7pA_Or-_va0DWKwxv334kv5FADm2Kpi1X_B0rmtfBo2Sy3FA_51d8R7ESkQ.7w7otThGtNn5qr8f.GN6Z0fU7Iwlv2DIQKZgUjhtyYRr_IW0Q_ani3RjeucvZqBypv12GUZR2M_V7iusc3-CdtZpGzKr0g3h-PCOALYaSOjSE6KemEATgf6vf-0Jowldlq5RcSYgOunEX3wj6HIeyHkuiCWKeMLG70qsm9HWa3YOQgY8VwDHOwmZgbk5O05TnuvuHhwFcOzqYT0RrE3F9-Rl7xooeVZzWeEgF__tledlWquJjkWloA4xZkgiHl8l0ibZdLrcMUO4BdEv4FHDpthl6b5t2c3BgDoGs4HmwSnIT5taGenL2nfgrRE6FRAgv8JOem-kSfZzb_ZY5WMLX_3Oa2yRRcUJgiDrWp_iXbcgeQFoFSkXDibf8eV3Ynz-RrAvwRsf_WYp9zrurm_ZOjWIH1CAZKEF7vlTdiwMCMy_SHLFVHmMDOh0H9eUtg9yB4CjA-3Nh50iJCcf73Hca5_LQSIpY3pWq6frF5xF_HA41O2T5BDq_Nf1EdWFx9eO7i996iYhLZM218rMC2XgtQNUWIHkNalPyoQEv0VgKH3N26tadSN6y9C6puGFnLkURptK-Ty98dgrg9-L6d4z0wiP8gcsN0tVIKF4Cz0B5tUdY1rfFV8ePQLQ9AfE5rtADvEHvGoaNNa4PhBO7kPPBS5JNeKrTf-vPEYwOiVhh9wiWS9Cq9uK_FBxkTI-2f7vQBWC0ftESAFDzNQ5zyhFFyixfrRjF8LOiw4FNuigc8z3Pj2IjlB351kiEl-f9N0PyM58QGsT8N7xD3eY8EKEHRe4AdXX4ASFSWJHWdii6UmFyS8e5eIaSIR1FYyyggzdelYgvJ_DDpZrfT8RiCFrFBReU29JT0XvnbznidR2gPJBOrk1KeL-8pyIIlMJtqfSYQWUM87i50Vj13BqztaisRklSMWQlBFetWB45xl1QmZD9fDc7yIJyXhcDEqXrKADmpdxJDffLzYXCyyNnviWloXiJCkYThfCJdvekiCHf8Yud7SeEHhKB9e-Rb1RmM_Cjj6b5Zsl7xZr5w7npg0oIUK1gFfwgl_fWB2h8vTozsQqZVl2RVKcWxsDlxW_v5z0eQ2POJu3t5LA53cHiu7bPd86XGZlYZ4tXKeZUA1uR_IEYTwr7Z74rHyNnq9yxvhTJ5a-oIPl9CctDjl9wEOzmnWlol23a3rrckQ-SFMnoEs6MKXgD-691n1WxMy1Sey0L5GLJEsrfydu6inUwafQZ_5aAKdgBx7PBhJm1nwDaf6rpn43pEBsQc7ZJJhNn45L3FeHH1OgZYui-cxr_y-jWCgkhBWg8GENK4KgOBXLdkQICsi9QsUm4iQWtMb8GAX__Ta6cNf7sP0TcemFZtQVPvtEHLbam.E_B0LtCDnFlbXGr0_UxtDw
+          description: refresh token to get new tokens
+      type: object
+      required:
+        - refresh_token
+    RefreshTokenResponse:
+      properties:
+        id_token:
+          type: string
+          example: >-
+            eyJraWQiOiJ4NytGSFp3SFFNUU55VkdleHl4bm9VN3RVS1JuU2ZcL1RJWFBPbWFUTUszRT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI2ZjNkNjFlNC01ZmVlLTRiNWEtOTk1YS0wMmY2NTc2NWZiMzIiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLmFwLXNvdXRoZWFzdC0xLmFtYXpvbmF3cy5jb21cL2FwLXNvdXRoZWFzdC0xX29iVUN5elVteCIsImNvZ25pdG86dXNlcm5hbWUiOiI2ZjNkNjFlNC01ZmVlLTRiNWEtOTk1YS0wMmY2NTc2NWZiMzIiLCJnaXZlbl9uYW1lIjoiRCIsIm9yaWdpbl9qdGkiOiI4Nzc0YWVjZi03YzNhLTQyY2YtYTljNS1hYzNiYmE4ODNmN2MiLCJhdWQiOiIzODdicGJscXRncnR1Y3EydnJsNjVrYXExNiIsImV2ZW50X2lkIjoiMTkxYWIyYmEtY2Y3Yi00MDk4LTlhYTktZDQzMzkzMWNkMzgwIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE2ODQxMjMyOTksImV4cCI6MTY4NDEyNjg5OSwiaWF0IjoxNjg0MTIzMjk5LCJmYW1pbHlfbmFtZSI6IksiLCJqdGkiOiIwNDIwMzAzMS0xOGQyLTQxNWEtYTNjNS03Zjk0YjIwMDFkYmEiLCJlbWFpbCI6ImRrQHZpbm92YS5jb20uc2cifQ.rG41n-Hdu155EIDBh9f_zpcOHFXq4w1WoTzim0D3gExnFV3EslzqCu8GeGn_kKbB29jsumG3eGrXr7UstnbbkyEjHh5LEk0lGwXht3gQRCsvTKzNZDmreXWO3ILuJuE1kkZmVHdKWNewNIeD4II8xfiGOFSCToKltI4AsSksoL0Ryj2gzcJil00KO0Yy1Q8j-P_Gu6TGG1r3F-9Ibx0SnjeBB2e6Up0_JJKsXNYYUYZskpZaYofkCV4XzkBaht8J4rSWHCMkNsupSROcaAXr7zXvDE8jTdnkeY3LiY1Z0URNmdA4JEedBe9v9MVqM5nV3owGT9sZTJIf0aGepcO_Tg
+        expire_in:
+          type: integer
+          format: int64
+          example: 3600
+        access_token:
+          type: string
+          example: >-
+            eyJraWQiOiJQdlpiQjZYNWx5UVJtajFCZnRBMndrcDB2R0FISHNuTHQxS1dmVWxoZlFrPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI2ZjNkNjFlNC01ZmVlLTRiNWEtOTk1YS0wMmY2NTc2NWZiMzIiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGhlYXN0LTEuYW1hem9uYXdzLmNvbVwvYXAtc291dGhlYXN0LTFfb2JVQ3l6VW14IiwiY2xpZW50X2lkIjoiMzg3YnBibHF0Z3J0dWNxMnZybDY1a2FxMTYiLCJvcmlnaW5fanRpIjoiODc3NGFlY2YtN2MzYS00MmNmLWE5YzUtYWMzYmJhODgzZjdjIiwiZXZlbnRfaWQiOiIxOTFhYjJiYS1jZjdiLTQwOTgtOWFhOS1kNDMzOTMxY2QzODAiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJzY29wZSI6ImF3cy5jb2duaXRvLnNpZ25pbi51c2VyLmFkbWluIiwiYXV0aF90aW1lIjoxNjg0MTIzMjk5LCJleHAiOjE2ODQxMjY4OTksImlhdCI6MTY4NDEyMzI5OSwianRpIjoiMWQyYzA4MGQtYjkyZS00ODhlLTkxMGUtNDM4MTQzM2IzOTVkIiwidXNlcm5hbWUiOiI2ZjNkNjFlNC01ZmVlLTRiNWEtOTk1YS0wMmY2NTc2NWZiMzIifQ.jIw8lIqRe7kgv1csdmK7fvUGZQHeIZd5VzbiKAYZ73Vx1kWL4ZG_8iyTLrtcR2pjaOpRKlRcnFdMpt1f8Sx-vv4JOA62ki0tQPN85e_cTMQM7XJsowqHmHeqYHl5AmxidNMWyY3gK--W95iEUiVqB6eDbvmuHE7gLgzdDYV_agErhstwGMJRO1ki1LfRan-NI0XhvKQz6MunhZQd7mB8v2spKoQg6uIOJ4xQ79Mlnvs-Nuuaw1HCxiv-jYcleLzbs3EBOQG3gfMer7_pMEmifghX_l8cDztpcmWNQ6pxXhyeyrKLqRgTVrg3dIKMi64RoFCW5ilzw9eSYGdKAMCZZA
+        token_type:
+          type: string
+          example: Bearer
+      required:
+        - id_token
+        - expire_in
+        - access_token
+        - token_type
+    ForgotPasswordRequestBody:
+      properties:
+        email:
+          type: string
+          example: dk@vinova.com.sg
+          description: user email
+      required:
+        - email
+      type: object
+    ForgotPasswordResponse:
+      properties:
+        delivery_medium:
+          type: string
+          example: EMAIL
+          description: device that will receive code
+        destination:
+          type: string
+          example: dk@vinova.com.sg
+          description: email address will receive the code
+      type: object
+    ChangePasswordRequestBody:
+      properties:
+        old_password:
+          type: string
+          example: Password123!
+          description: old password
+        new_password:
+          type: string
+          example: Password1!
+          description: old password
+        access_token:
+          type: string
+          example: >-
+            eyJraWQiOiJQdlpiQjZYNWx5UVJtajFCZnRBMndrcDB2R0FISHNuTHQxS1dmVWxoZlFrPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI2ZjNkNjFlNC01ZmVlLTRiNWEtOTk1YS0wMmY2NTc2NWZiMzIiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGhlYXN0LTEuYW1hem9uYXdzLmNvbVwvYXAtc291dGhlYXN0LTFfb2JVQ3l6VW14IiwiY2xpZW50X2lkIjoiMzg3YnBibHF0Z3J0dWNxMnZybDY1a2FxMTYiLCJvcmlnaW5fanRpIjoiODc3NGFlY2YtN2MzYS00MmNmLWE5YzUtYWMzYmJhODgzZjdjIiwiZXZlbnRfaWQiOiIxOTFhYjJiYS1jZjdiLTQwOTgtOWFhOS1kNDMzOTMxY2QzODAiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJzY29wZSI6ImF3cy5jb2duaXRvLnNpZ25pbi51c2VyLmFkbWluIiwiYXV0aF90aW1lIjoxNjg0MTIzMjk5LCJleHAiOjE2ODQxMjY4OTksImlhdCI6MTY4NDEyMzI5OSwianRpIjoiMWQyYzA4MGQtYjkyZS00ODhlLTkxMGUtNDM4MTQzM2IzOTVkIiwidXNlcm5hbWUiOiI2ZjNkNjFlNC01ZmVlLTRiNWEtOTk1YS0wMmY2NTc2NWZiMzIifQ.jIw8lIqRe7kgv1csdmK7fvUGZQHeIZd5VzbiKAYZ73Vx1kWL4ZG_8iyTLrtcR2pjaOpRKlRcnFdMpt1f8Sx-vv4JOA62ki0tQPN85e_cTMQM7XJsowqHmHeqYHl5AmxidNMWyY3gK--W95iEUiVqB6eDbvmuHE7gLgzdDYV_agErhstwGMJRO1ki1LfRan-NI0XhvKQz6MunhZQd7mB8v2spKoQg6uIOJ4xQ79Mlnvs-Nuuaw1HCxiv-jYcleLzbs3EBOQG3gfMer7_pMEmifghX_l8cDztpcmWNQ6pxXhyeyrKLqRgTVrg3dIKMi64RoFCW5ilzw9eSYGdKAMCZZA
+          description: cognito access token
+      required:
+        - access_token
+        - old_password
+        - new_password
+      type: object
+    Demo:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: document 1
+    Event:
+      type: string
+      enum:
+        - social.message.created
+        - endorsement.request.created
+        - education.course.progress.remind
+    SocialMessageCreated:
+      required:
+        - sender
+        - msg
+        - event
+        - channel_id
+        - create_at
+      properties:
+        event:
+          $ref: '#/components/schemas/Event'
+        sender:
+          type: object
+          required:
+            - id
+            - first_name
+            - last_name
+            - image_url
+          properties:
+            id:
+              description: id of message sender
+              type: string
+              example: 6f3d61e4-5fee-4b5a-995a-02f65765fb32
+            first_name:
+              type: string
+              example: Damwon
+              description: user first name
+            last_name:
+              type: string
+              example: Kia
+              description: user last name
+            image_url:
+              type: string
+              example: ./example.a.png
+              description: avatar of sender
+        msg:
+          type: string
+          example: hello from DK
+          description: message content
+        channel_id:
+          description: the channel id that have message
+          type: string
+          example: IKE_NGU
+        create_at:
+          description: time when user send message
+          type: string
+          example: '2023-05-25T10:50:50.764Z'
+    Ping:
+      type: string
+      example: ping
+    EndorsementRequestCreated:
+      required:
+        - endorsement_id
+        - sender
+        - event
+        - create_at
+      properties:
+        endorsement_id:
+          type: integer
+          description: id of endorsement
+          example: 10
+        sender:
+          type: object
+          required:
+            - id
+            - first_name
+            - last_name
+            - image_url
+          properties:
+            id:
+              description: id of endorsement sender
+              type: string
+              example: 6f3d61e4-5fee-4b5a-995a-02f65765fb32
+            first_name:
+              type: string
+              example: Damwon
+              description: user first name
+            last_name:
+              type: string
+              example: Kia
+              description: user last name
+            image_url:
+              type: string
+              example: ./example.a.png
+              description: avatar of sender
+        event:
+          $ref: '#/components/schemas/Event'
+        create_at:
+          description: time when user send message
+          type: string
+          example: '2023-05-25T10:50:50.764Z'
+    Notification:
+      properties:
+        id:
+          type: string
+          description: the id of notification
+          example: 6f3d61e4-5fee-4b5a-995a-02f65765fb32
+        data:
+          type: object
+          example: example
+          description: the data of notification. It depends on the event type
+        is_seen:
+          type: boolean
+          example: false
+          description: describe use is seen the notification or not
+        event:
+          type: string
+          description: the event id
+          example: social.message.created
+        sender_id:
+          type: string
+          description: the id of the sender
+          example: 6f3d61e4-5fee-4b5a-995a-02f65765fb32
+    EducationCourseProgressRemind:
+      required:
+        - source
+        - event
+        - create_at
+      properties:
+        event:
+          $ref: '#/components/schemas/Event'
+        course:
+          description: information about the course
+          type: object
+          properties:
+            id:
+              type: integer
+              description: id of the course
+              example: 10
+            title:
+              type: string
+              description: title of the course
+              example: facebook tutorial
+          required:
+            - id
+            - title
+        create_at:
+          description: time when user send message
+          type: string
+          example: '2022-12-22T06:00:00.200Z'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    JWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: tribe authentication token
+  requestBodies:
+    DemoRequest:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - description: My Demo
+                title: Pettie
+              - $ref: '#/components/schemas/Demo'
+      description: Demo object that needs to be added to the store
+      required: true

@@ -6,13 +6,13 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"github.com/duckhue01/wild-workouts/internal/common/auth/cognito"
-	"github.com/duckhue01/wild-workouts/internal/common/logs"
-	"github.com/duckhue01/wild-workouts/internal/common/server"
-	cmsvc "github.com/duckhue01/wild-workouts/internal/common/service"
 
-	"github.com/duckhue01/wild-workouts/internal/demo/ports"
-	"github.com/duckhue01/wild-workouts/internal/demo/service"
+	"github.com/tribefintech/microservices/internal/common/auth/cognito"
+	"github.com/tribefintech/microservices/internal/common/logs"
+	"github.com/tribefintech/microservices/internal/common/server"
+	cmsvc "github.com/tribefintech/microservices/internal/common/service"
+	"github.com/tribefintech/microservices/internal/demo/ports"
+	"github.com/tribefintech/microservices/internal/demo/service"
 )
 
 var conf = new(service.Config)
@@ -45,6 +45,6 @@ func main() {
 			return ports.HandlerFromMux(ports.NewHttpServer(app), router)
 		},
 		Port:   conf.Port,
-		Parser: parser,
+		TokenParser: parser,
 	})
 }

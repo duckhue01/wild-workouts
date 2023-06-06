@@ -1,0 +1,16 @@
+name: Dev Doc Deploy
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - internal/auth/*
+      - .github/workflows/auth.dev.yaml
+
+jobs:
+  reviewdog:
+    name: golangci
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "todo"

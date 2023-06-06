@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/mitchellh/mapstructure"
-	"github.com/ory/viper"
+	"github.com/spf13/viper"
 )
 
 // ReadConfig read config from configuration file

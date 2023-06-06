@@ -1,44 +1,40 @@
-module github.com/duckhue01/wild-workouts/internal/demo
+module github.com/tribefintech/microservices/internal/demo
 
 go 1.20
 
 require (
 	github.com/deepmap/oapi-codegen v1.12.4
-	github.com/duckhue01/wild-workouts/internal/common v0.0.0-00010101000000-000000000000
 	github.com/go-chi/chi/v5 v5.0.8
+	github.com/lib/pq v1.10.7
 	github.com/sirupsen/logrus v1.9.0
+	github.com/tribefintech/microservices/internal/common v0.0.0-00010101000000-000000000000
 )
 
 require (
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
-	github.com/cespare/xxhash v1.1.0 // indirect
-	github.com/dgraph-io/ristretto v0.0.1 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-chi/chi v1.5.4 // indirect
-	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/golang-jwt/jwt/v5 v5.0.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/lib/pq v1.10.7 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/ory/viper v1.7.5 // indirect
-	github.com/pelletier/go-toml v1.9.3 // indirect
+	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/spf13/afero v1.9.3 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/viper v1.15.0 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
 	github.com/x-cray/logrus-prefixed-formatter v0.5.2 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	golang.org/x/term v0.6.0 // indirect
-	google.golang.org/genproto v0.0.0-20221227171554-f9683d7f8bef // indirect
-	google.golang.org/grpc v1.52.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 require (
@@ -51,4 +47,4 @@ require (
 	golang.org/x/text v0.8.0 // indirect
 )
 
-replace github.com/duckhue01/wild-workouts/internal/common => ../common/
+replace github.com/tribefintech/microservices/internal/common => ../common/

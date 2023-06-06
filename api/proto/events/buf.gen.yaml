@@ -1,0 +1,15 @@
+version: v1
+plugins:
+    - plugin: buf.build/bufbuild/connect-go
+      out: ../../../internal/common/protogen/events
+      opt:
+      - paths=source_relative
+    - plugin: buf.build/grpc/go
+      out: ../../../internal/common/protogen/events
+      opt:
+        - paths=source_relative
+    # dependencies
+    - plugin: buf.build/protocolbuffers/go
+      out: ../../../internal/common/protogen/events
+      opt:
+        - paths=source_relative

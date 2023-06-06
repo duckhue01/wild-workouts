@@ -1,9 +1,11 @@
 # developer generated
-.terraform
 temp
 secret.yaml
 .go/
 .go-cache/
+.vscode
+
 
 # machine generated
 .DS_Store
+.terraform

@@ -3,13 +3,14 @@ package adapter
 import (
 	"context"
 	"database/sql"
-	"fmt"
+	"errors"
 
-	"github.com/duckhue01/wild-workouts/internal/demo/app/query"
-	"github.com/duckhue01/wild-workouts/internal/demo/postgres/sqlc"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+
+	"github.com/tribefintech/microservices/internal/demo/app/query"
+	"github.com/tribefintech/microservices/internal/demo/postgres/sqlc"
 )
 
 type Postgres struct {
@@ -18,20 +19,20 @@ type Postgres struct {
 }
 
 func NewPostgres(db *sql.DB) *Postgres {
-
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	if err != nil {
-		panic(fmt.Errorf("fatal can not create driver instance: %w", err))
+		panic(err)
 	}
 
-	m, err := migrate.NewWithDatabaseInstance("file:///../postgres/migration", "postgres", driver)
+	m, err := migrate.NewWithDatabaseInstance("file:///internal/demo/postgres/migration", "postgres", driver)
 	if err != nil {
-		panic(fmt.Errorf("fatal can not create migration instance: %w", err))
+		panic(err)
 	}
 
 	err = m.Up()
-	if err != nil {
-		panic(fmt.Errorf("fatal can not migrate database: %w", err))
+
+	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		panic(err)
 	}
 
 	return &Postgres{
@@ -40,7 +41,7 @@ func NewPostgres(db *sql.DB) *Postgres {
 	}
 }
 
-func (a *Postgres) ListAllDemos(ctx context.Context) ([]*query.Demo, error) {
+func (a *Postgres) ListAllDemos(ctx context.Context, q query.ListCurrentUserDemosQuery) ([]*query.Demo, error) {
 	res, err := a.sql.ListAllDemos(ctx)
 	if err != nil {
 		return nil, err

@@ -1,0 +1,39 @@
+replicaCount: 1
+
+image:
+  repository: 558450428038.dkr.ecr.ap-southeast-1.amazonaws.com/tribe/doc
+  pullPolicy: Always
+
+appName: doc
+namespace: dev
+fullnameOverride: "doc"
+
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    # nginx.ingress.kubernetes.io/rewrite-target: /$2
+  hosts:
+    - host: api.dev.tymetribe.com
+      paths:
+        - path: /doc
+
+resources:
+   requests:
+     cpu: 200m
+     memory: 256Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+nodeSelector: {}

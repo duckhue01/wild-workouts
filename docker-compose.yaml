@@ -1,34 +1,69 @@
-name: wild-workouts
+name: ms
 services:
-  demo-http:
+  # demo-http:
+  #   build:
+  #     context: docker/local
+  #   volumes:
+  #     - ./internal/common:/internal/common
+  #     - ./internal/demo:/internal/demo
+  #     - ./.go/pkg:/go/pkg
+  #     - ./.go-cache:/go-cache
+  # working_dir: /internal/demo
+  # ports:
+  #   - "127.0.0.1:3000:$PORT"
+  # environment:
+  #   GOCACHE: /go-cache
+  auth:
     build:
       context: docker/local
     volumes:
-      - ./internal:/internal
+      - ./internal/common:/internal/common
+      - ./internal/auth:/internal/auth
       - ./.go/pkg:/go/pkg
       - ./.go-cache:/go-cache
-    working_dir: /internal/demo
+    working_dir: /internal/auth
     ports:
-      - "127.0.0.1:3000:$PORT"
-    env_file:
-      - .env
+      - "127.0.0.1:3001:$PORT"
     environment:
-      SERVER_TO_RUN: http
       GOCACHE: /go-cache
-
-  portgres:
-    image: postgres:alpine
-    ports:
-      - 5432:5432
+  notif:
+    depends_on:
+      - nats
+      # - postgres
+    build:
+      context: docker/local
     volumes:
-      - database:/var/lib/postgres/data/
-    env_file:
-      - .env
+      - ./internal/common:/internal/common
+      - ./internal/notif:/internal/notif
+      - ./.go/pkg:/go/pkg
+      - ./.go-cache:/go-cache
+    working_dir: /internal/notif
+    ports:
+      - "127.0.0.1:3002:$PORT"
+    environment:
+      GOCACHE: /go-cache
   nats:
     image: nats:latest
     ports:
       - 4222:4222
       - 8222:8222
       - 6222:6222
+  # redis:
+  #   image: redis:6.2-alpine
+  #   restart: always
+  #   ports:
+  #     - '6379:6379'a
+  #   command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+  #   volumes:
+  #     - redis:/data
+  # postgres:
+  #   image: postgres:alpine
+  #   ports:
+  #     - 5432:5432
+  #   volumes:
+  #     - database:/var/lib/postgres/data/
+  #   env_file:
+  #     - .env
 volumes:
   database:
+  redis:

@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/duckhue01/wild-workouts/internal/demo/app/query"
+	"github.com/tribefintech/microservices/internal/demo/app/query"
 )
 
 type Memory struct {

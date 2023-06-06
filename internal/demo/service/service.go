@@ -2,14 +2,15 @@ package service
 
 import (
 	"context"
+	"database/sql"
 
+	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
+	"github.com/tribefintech/microservices/internal/common/metrics"
 
-	"github.com/duckhue01/wild-workouts/internal/common/metrics"
-
-	"github.com/duckhue01/wild-workouts/internal/demo/adapter"
-	"github.com/duckhue01/wild-workouts/internal/demo/app"
-	"github.com/duckhue01/wild-workouts/internal/demo/app/query"
+	"github.com/tribefintech/microservices/internal/demo/adapter"
+	"github.com/tribefintech/microservices/internal/demo/app"
+	"github.com/tribefintech/microservices/internal/demo/app/query"
 )
 
 type Config struct {
@@ -37,7 +38,16 @@ func NewApplication(ctx context.Context, sec *Secret, conf *Config) app.Applicat
 	logger := logrus.NewEntry(logrus.StandardLogger())
 	logger.Info("config and secret is loaded")
 
-	hourRepository := adapter.NewMemory()
+	db, err := sql.Open("postgres", "postgres://postgres:postgres@postgres:5432/tribe?sslmode=disable")
+	if err != nil {
+		panic(err)
+	}
+
+	if err = db.Ping(); err != nil {
+		panic(err)
+	}
+
+	hourRepository := adapter.NewPostgres(db)
 	metricsClient := metrics.NoOp{}
 
 	return app.Application{

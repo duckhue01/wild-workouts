@@ -1,0 +1,29 @@
+name: PR Common Review
+
+on:
+  pull_request:
+    paths:
+      - internal/common/*
+      - .github/workflows/common.pr.yaml
+
+jobs:
+  reviewdog:
+    name: golangci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Linter
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          reporter: github-pr-review
+          level: error
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.20"
+      - name: Test
+        run: cd ./internal/common && go test ./...

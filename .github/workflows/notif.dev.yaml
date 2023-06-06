@@ -1,0 +1,54 @@
+name: Dev Notif Deploy
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - internal/notif/*
+      - .github/workflows/notif.dev.yaml
+
+env:
+  GITHUB_SHA: ${{github.sha}}
+  AWS_REGION: ap-southeast-1
+  IMAGE_NAME: 558450428038.dkr.ecr.ap-southeast-1.amazonaws.com/tribe/notif
+  AWS_ACCESS_KEY_ID: AKIAYEBR5JCDIG54VKNH
+  AWS_SECRET_ACCESS_KEY: secrets.AWS_SECRET_ACCESS_KEY
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Generate build ID
+        id: id_prep
+        run: |
+          branch=${GITHUB_REF##*/}
+          sha=${GITHUB_SHA::8}
+          ts=$(date +%s)
+          echo "::set-output name=BUILD_ID::${branch}-${sha}-${ts}"
+
+      - name: Build, tag, and push image to AWS ECR
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          context: .
+          file: ./docker/dev/notif/Dockerfile
+          tags: |
+            ${{ env.IMAGE_TAG }}:${{ steps.id_prep.outputs.BUILD_ID }}
+
+      - name: Logout of Amazon ECR
+        if: always()
+        run: docker logout ${{ steps.login-ecr.outputs.registry }}

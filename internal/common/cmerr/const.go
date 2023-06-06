@@ -5,10 +5,12 @@ const (
 	InternalServerError string = "internal-server-error"
 
 	// token
-	TokenIsExpired   string = "token-is-expired"
-	MalformedToken   string = "malformed-jwt"
-	EmptyBearerToken string = "empty-bearer-token"
+	TokenIsExpired          string = "token-is-expired"
+	MalformedToken          string = "malformed-jwt"
+	EmptyBearerToken        string = "empty-bearer-token"
+	InvalidSignature        string = "invalid-signature"
+	UnexpectedSigningMethod string = "unexpected-signing-method"
 
-	// user
+	// auth middleware
 	NoUserFound string = "no-user-found"
 )

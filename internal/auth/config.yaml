@@ -1,0 +1,5 @@
+env: local
+port: 3000
+cognito:
+  clientId: 387bpblqtgrtucq2vrl65kaq16
+  region: ap-southeast-1

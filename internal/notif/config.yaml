@@ -1,2 +1,15 @@
+env: local
+port: 3000
 nats:
-  serviceName: nats
+  host: nats
+  port: 4222
+cognito:
+  region: "ap-southeast-1"
+  poolId: "ap-southeast-1_obUCyzUmx"
+postgres:
+  host: "host.docker.internal"
+  port: 5432
+  username: "postgres"
+  databaseName: "tribe"
+oneSignal:
+  appId: "8f116835-33d7-48cb-bffa-69fb9d6d6896"

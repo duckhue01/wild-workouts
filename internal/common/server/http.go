@@ -8,25 +8,26 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/sirupsen/logrus"
 
-	"github.com/duckhue01/wild-workouts/internal/common/auth"
-	"github.com/duckhue01/wild-workouts/internal/common/logs"
+	"github.com/tribefintech/microservices/internal/common/auth"
+	"github.com/tribefintech/microservices/internal/common/logs"
 )
 
 type Conf struct {
-	CreateHandler func(router chi.Router) http.Handler
-	Port          int
-	Parser        auth.Parser
+	CreateHandler  func(router chi.Router) http.Handler
+	Port           int
+	TokenParser    auth.Parser
+	RouteWhiteList []string
 }
 
 func Run(c Conf) {
 	apiRouter := chi.NewRouter()
-	setMiddleWares(apiRouter, c.Parser)
+	setMiddleWares(apiRouter, c.TokenParser, c.RouteWhiteList)
 
 	rootRouter := chi.NewRouter()
 	// we are mounting all APIs under /api path
-	rootRouter.Mount("/api", c.CreateHandler(apiRouter))
+	rootRouter.Mount("/", c.CreateHandler(apiRouter))
 
-	logrus.Info("starting http server")
+	logrus.Info("start http server")
 
 	err := http.ListenAndServe(fmt.Sprintf(":%d", c.Port), rootRouter)
 	if err != nil {
@@ -34,7 +35,7 @@ func Run(c Conf) {
 	}
 }
 
-func setMiddleWares(router *chi.Mux, p auth.Parser) {
+func setMiddleWares(router *chi.Mux, p auth.Parser, awl []string) {
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
 	router.Use(logs.NewStructuredLogger(logrus.StandardLogger()))
@@ -47,7 +48,8 @@ func setMiddleWares(router *chi.Mux, p auth.Parser) {
 	router.Use(middleware.NoCache)
 
 	if p != nil {
-		router.Use(auth.AuthMiddleware{P: p}.Middleware)
+		router.Use(auth.NewAuthMiddleware(p, awl).Middleware)
+		logrus.Info("use auth middle ware")
 	}
 }
 

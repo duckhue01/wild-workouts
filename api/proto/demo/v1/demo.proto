@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package demo.v1;
 
-option go_package = "github.com/duckhue01/wild-workouts/internal/demo";
+option go_package = "github.com/tribefintech/microservices/internal/demo";
 
 message Demo {
   int64 id = 1;

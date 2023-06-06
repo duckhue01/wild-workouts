@@ -1,10 +1,7 @@
-# Wild Workout
-This project is build to:
-- solve the real life microservice problem 
-- apply openapi document driven development
+# Microservices
 
 ## Table of contents
-- [Wild Workout](#wild-workout)
+- [Microservices](#microservices)
   - [Table of contents](#table-of-contents)
   - [How to get up and running](#how-to-get-up-and-running)
     - [Before you begin, make sure you have:](#before-you-begin-make-sure-you-have)
@@ -35,6 +32,9 @@ This project is build to:
 4. The buf tool `buf:1.17.x` is installed
 5. The oapi-codegen tool `deepmap/oapi-codegen:v1.12.x` is installed
 6. The redocly tool `redoc/redocly:1.0.0-beta.123` is installed
+7. The Mock generator tool `mockgen` is installed
+8. The SQLC tool `sqlc:v1.8.x` is installed
+9. The migrate tool `migrate:v4.15.1` is installed
 
 
 ### Install packages

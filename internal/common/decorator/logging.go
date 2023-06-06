@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/duckhue01/wild-workouts/internal/common/cmerr"
 	"github.com/sirupsen/logrus"
+	"github.com/tribefintech/microservices/internal/common/cmerr"
 )
 
 type commandLoggingDecorator[C any] struct {
@@ -52,7 +52,7 @@ func (d queryLoggingDecorator[C, R]) Handle(ctx context.Context, cmd C) (result 
 		}
 
 		if err, ok := err.(cmerr.Error); ok {
-			switch err.ErrorType() {
+			switch err.Type() {
 			case cmerr.TypUnexpected:
 				logger.WithError(err).Error("failed to execute query")
 			default:

@@ -1,17 +1,28 @@
 include .env
 
 .PHONY: bootstrap
-bootstrap:  openapi_http
+bootstrap: openapi
 
-.PHONY: openapi_http
-openapi_http:
-	@tput setaf 2;echo "generate http server"
+.PHONY: openapi
+openapi:
+	@tput setaf 2;echo "generate http server & http types"
 	@./scripts/openapi/generate_server.sh demo internal/demo/ports ports
-	@./scripts/openapi/generate_server.sh user internal/user/ports ports
+	@./scripts/openapi/generate_server.sh auth internal/auth main
+	@./scripts/openapi/generate_server.sh notif internal/notif/ports ports
 
 
-.PHONY: preview_api
-preview_api:
+.PHONY: previewdoc
+previewdoc:
 	@tput setaf 2;echo "preview api"
-	redocly join ./api/openapi/*.yaml -o ./api/openapi/merged/openapi.yaml
-	redocly preview-docs ./api/openapi/demo.yaml
+	redocly join ./api/openapi/*.yaml -o ./main.yaml
+	redocly preview-docs ./main.yaml
+
+.PHONY: eventproto
+eventproto:
+	@tput setaf 2;echo "generating event proto"
+	buf generate --template api/proto/events/buf.gen.yaml
+
+.PHONY: mergedoc
+mergedoc:
+	@tput setaf 2;echo "merge openapi docs"
+	redocly join ./api/openapi/*.yaml -o ./main.yaml

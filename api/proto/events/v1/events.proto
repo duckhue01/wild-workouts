@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package events.v1;
+
+option go_package = "github.com/tribefintech/microservices/internal/events";
+import "google/protobuf/timestamp.proto";
+
+message SocialMessageCreated {
+  message Sender {
+    string id = 1;
+    string first_name = 2;
+    string last_name = 3; 
+    string image_url = 4;
+  }
+
+  string msg = 1;
+  Sender sender = 2;
+  repeated string receiver_ids = 3;
+  google.protobuf.Timestamp created_at = 4;
+}

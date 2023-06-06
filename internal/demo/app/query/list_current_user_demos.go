@@ -3,9 +3,9 @@ package query
 import (
 	"context"
 
-	"github.com/duckhue01/wild-workouts/internal/common/cmerr"
-	"github.com/duckhue01/wild-workouts/internal/common/decorator"
 	"github.com/sirupsen/logrus"
+	"github.com/tribefintech/microservices/internal/common/cmerr"
+	"github.com/tribefintech/microservices/internal/common/decorator"
 )
 
 type ListCurrentUserDemosQuery struct {

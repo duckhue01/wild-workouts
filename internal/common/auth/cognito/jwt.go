@@ -5,14 +5,13 @@ import (
 	"encoding/base64"
 	"encoding/binary"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
-	"log"
 	"math/big"
 	"net/http"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/tribefintech/microservices/internal/common/cmerr"
 )
 
 const (
@@ -42,12 +41,12 @@ func New(region, poolId string) *Auth {
 	a := &Auth{
 		cognitoRegion:     region,
 		cognitoUserPoolID: poolId,
+		jwkURL:            fmt.Sprintf("https://cognito-idp.%s.amazonaws.com/%s/.well-known/jwks.json", region, poolId),
 	}
 
-	a.jwkURL = fmt.Sprintf("https://cognito-idp.%s.amazonaws.com/%s/.well-known/jwks.json", a.cognitoRegion, a.cognitoUserPoolID)
 	err := a.getJWK()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	return a
@@ -86,6 +85,7 @@ func (a *Auth) getJWK() error {
 // Parse parse JWT token into Token struct
 func (a *Auth) Parse(tokenString string) (*jwt.Token, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+
 		index := -1
 		for i, v := range a.jwk.Keys {
 			if v.Kid == token.Header["kid"] {
@@ -93,10 +93,15 @@ func (a *Auth) Parse(tokenString string) (*jwt.Token, error) {
 			}
 		}
 		if index == -1 {
-			return nil, errors.New(KEY_NOT_FOUND_ERR)
+			return nil, cmerr.NewUnexpectedError(
+				KEY_NOT_FOUND_ERR,
+				cmerr.InternalServerError)
 		}
 		if token.Method.Alg() != "RS256" {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+
+			return nil, cmerr.NewAuthorizationError(
+				fmt.Sprintf("Unexpected signing method: %v", token.Header["alg"]),
+				cmerr.UnexpectedSigningMethod)
 		}
 		key := convertKey(a.jwk.Keys[index].E, a.jwk.Keys[index].N)
 		return key, nil

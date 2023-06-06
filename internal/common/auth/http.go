@@ -2,12 +2,13 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"strings"
 
-	"github.com/duckhue01/wild-workouts/internal/common/cmerr"
-	"github.com/duckhue01/wild-workouts/internal/common/server/httperr"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/tribefintech/microservices/internal/common/cmerr"
+	"github.com/tribefintech/microservices/internal/common/server/httperr"
 )
 
 type Parser interface {
@@ -20,25 +21,37 @@ type User struct {
 }
 
 type AuthMiddleware struct {
-	P Parser
+	p  Parser
+	wl []string
+}
+
+func NewAuthMiddleware(p Parser, whiteList []string) AuthMiddleware {
+	return AuthMiddleware{
+		p:  p,
+		wl: whiteList,
+	}
 }
 
 func (a AuthMiddleware) Middleware(n http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
-		bearerToken := a.tokenFromHeader(r)
+		if contains(a.wl, r.URL.Path) {
+			n.ServeHTTP(w, r)
+			return
+		}
+
+		bearerToken := a.tokenFromRequest(r)
+
 		if bearerToken == "" {
 			httperr.Unauthorized(cmerr.EmptyBearerToken, nil, w, r)
 			return
 		}
 
-		parsedTok, err := a.P.Parse(bearerToken)
+		parsedTok, err := a.p.Parse(bearerToken)
 
 		if parsedTok.Valid {
 			if claims, ok := parsedTok.Claims.(jwt.MapClaims); ok {
-				// it's always a good idea to use custom type as context value (in this case ctxKey)
-				// because nobody from the outside of the package will be able to override/read this value
 				ctx = context.WithValue(ctx, userContextKey, User{
 					UUID:  claims["sub"].(string),
 					Email: claims["email"].(string),
@@ -50,56 +63,44 @@ func (a AuthMiddleware) Middleware(n http.Handler) http.Handler {
 			}
 
 			httperr.InternalError(cmerr.InternalServerError, err, w, r)
-
-		} else {
-			if ve, ok := err.(*jwt.ValidationError); ok {
-
-				if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-					httperr.Unauthorized(cmerr.MalformedToken, err, w, r)
-					return
-				}
-
-				if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
-					httperr.Unauthorized(cmerr.TokenIsExpired, err, w, r)
-					return
-				}
-			}
-
-			httperr.InternalError(cmerr.InternalServerError, err, w, r)
 			return
 
 		}
 
+		if errors.Is(err, jwt.ErrTokenMalformed) {
+			httperr.Unauthorized(cmerr.MalformedToken, err, w, r)
+			return
+		}
+
+		if errors.Is(err, jwt.ErrTokenSignatureInvalid) {
+			httperr.Unauthorized(cmerr.InvalidSignature, err, w, r)
+			return
+		}
+
+		if errors.Is(err, jwt.ErrTokenExpired) {
+			httperr.Unauthorized(cmerr.TokenIsExpired, err, w, r)
+			return
+		}
+
+		httperr.InternalError(cmerr.InternalServerError, err, w, r)
 	})
 }
 
-func (c AuthMiddleware) tokenFromHeader(r *http.Request) string {
+func (c AuthMiddleware) tokenFromRequest(r *http.Request) string {
 	headerValue := r.Header.Get("Authorization")
 
 	if len(headerValue) > 7 && strings.ToLower(headerValue[0:6]) == "bearer" {
 		return headerValue[7:]
 	}
 
-	return ""
+	return r.URL.Query().Get("token")
 }
 
-type ctxKey int
-
-const (
-	userContextKey ctxKey = iota
-)
-
-var (
-	// if we expect that the user of the function may be interested with concrete error,
-	// it's a good idea to provide variable with this error
-	NoUserInContextError = cmerr.NewAuthorizationError("no user in context", cmerr.NoUserFound)
-)
-
-func UserFromCtx(ctx context.Context) (User, error) {
-	u, ok := ctx.Value(userContextKey).(User)
-	if ok {
-		return u, nil
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
 	}
-
-	return User{}, NoUserInContextError
+	return false
 }

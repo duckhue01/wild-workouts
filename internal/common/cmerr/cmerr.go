@@ -4,12 +4,11 @@ type Typ int
 
 const (
 	TypUnexpected Typ = iota
-	TypAuthorization
+	TypUnAuthorization
 	TypIncorrectInput
 	TypDomainError
+	TypRateLimited
 )
-
-
 
 type Error struct {
 	error string
@@ -25,16 +24,34 @@ func (s Error) Slug() string {
 	return s.slug
 }
 
-func (s Error) ErrorType() Typ {
+func (s Error) Type() Typ {
 	return s.typ
 }
 
-func New(error string, slug string, typ Typ) Error {
-	return Error{
-		error: error,
-		slug:  slug,
-		typ:   typ,
+func New(err interface{}, slug string, typ Typ) Error {
+
+	if err, ok := err.(error); ok {
+		return Error{
+			error: err.Error(),
+			slug:  slug,
+			typ:   typ,
+		}
+
 	}
+
+	if err, ok := err.(string); ok {
+		return Error{
+			error: err,
+			slug:  slug,
+			typ:   typ,
+		}
+	}
+	return Error{
+		error: "error message must be string or error type",
+		slug:  InternalServerError,
+		typ:   TypUnexpected,
+	}
+
 }
 
 func NewUnexpectedError(error string, slug string) Error {
@@ -49,7 +66,7 @@ func NewAuthorizationError(error string, slug string) Error {
 	return Error{
 		error: error,
 		slug:  slug,
-		typ:   TypAuthorization,
+		typ:   TypUnAuthorization,
 	}
 }
 
